@@ -130,7 +130,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         <div class="row justify-content-center">
             <div class="col-md-6 col-lg-5">
                 <div class="text-center mb-4">
-                    <h2>سامانه ثبت پاسخ آزمون</h2>
+                    <h2>سامانه پاسخ‌دون</h2>
                     <p class="text-muted">برای ادامه وارد حساب کاربری خود شوید</p>
                 </div>
                 

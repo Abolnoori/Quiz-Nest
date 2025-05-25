@@ -41,7 +41,7 @@ foreach ($answers as $answer) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>سامانه ثبت پاسخ آزمون</title>
+    <title>سامانه پاسخ‌دون</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/vazirmatn@33.0.3/Vazirmatn-font-face.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -566,11 +566,11 @@ foreach ($answers as $answer) {
     <!-- نوار بالای صفحه -->
     <nav class="navbar navbar-expand-lg navbar-light mb-4">
         <div class="container">
-            <a class="navbar-brand" href="#">سامانه ثبت پاسخ آزمون</a>
+            <a class="navbar-brand" href="#">سامانه پاسخ‌دون</a>
             <div class="dropdown">
                 <button class="btn btn-link dropdown-toggle user-menu-btn" type="button" id="userMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="fas fa-user-circle"></i>
-                    <span class="ms-2"><?php echo htmlspecialchars($user['fullname']); ?></span>
+                    <span><?php echo htmlspecialchars($user['fullname']); ?></span>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuButton">
                     <li>
@@ -614,8 +614,8 @@ foreach ($answers as $answer) {
     <div class="container">
         <!-- بخش اصلی -->
         <div id="subjectSection" class="section active">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h4>کتاب‌های من</h4>
+            <div class="ketab-div d-flex justify-content-between align-items-center mb-4">
+                <h4 class="title-hed">کتاب‌های من</h4>
                 <div class="d-flex gap-2">
                     <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#manageSubjectsModal">
                         <i class="fas fa-cog"></i>
@@ -674,7 +674,7 @@ foreach ($answers as $answer) {
                 </button>
             </div>
             <div id="questionContainer" class="answer-grid"></div>
-            <div style="margin-bottom: 50px;" class="d-flex justify-content-between mt-4">
+            <div style="margin-bottom: 50px;" class="safebaed d-flex justify-content-between mt-4">
                 <button class="btn btn-outline-primary" onclick="prevPage()">صفحه قبل</button>
                 <button class="btn btn-outline-primary" onclick="nextPage()">صفحه بعد</button>
             </div>
@@ -809,11 +809,11 @@ foreach ($answers as $answer) {
                             <div class="list-group">
                                 <?php foreach ($subjects as $subject): ?>
                                     <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center p-3">
-                                        <div>
-                                            <h6 class="mb-1"><?php echo htmlspecialchars($subject['name']); ?></h6>
+                                        <div class="modiriat">
+                                            <h6 class="modiriat-t mb-1"><?php echo htmlspecialchars($subject['name']); ?></h6>
                                             <small class="text-muted">پایه <?php echo htmlspecialchars($subject['grade']); ?></small>
                                         </div>
-                                        <button class="btn btn-outline-primary btn-sm" onclick="showEditForm(<?php echo $subject['id']; ?>)">
+                                        <button  class="virayesh btn btn-outline-primary btn-sm" onclick="showEditForm(<?php echo $subject['id']; ?>)">
                                             <i class="fas fa-edit"></i>
                                             ویرایش
                                         </button>
@@ -825,9 +825,9 @@ foreach ($answers as $answer) {
                         <!-- فرم ویرایش کتاب -->
                         <div id="editForm" style="display: none;">
                             <div style="display: flex; flex-direction: row-reverse; justify-content: space-between;" class="mb-3  align-items-center">
-                                <button style="margin: 0px 0px 0px 16px;" class="btn btn-outline-secondary btn-sm me-3" onclick="showSubjectsList()">
-                                    <i class="fas fa-arrow-right"></i>
-                                    بازگشت به لیست
+                                <button style="margin: 0px 0px 0px 16px;" class="bazgashd btn btn-outline-secondary btn-sm me-3" onclick="showSubjectsList()">
+                                    <i class="bazogashd fas fa-arrow-right"></i>
+                                    بازگشت  
                                 </button>
                                 <h6 class="m-0" id="editFormTitle">ویرایش کتاب</h6>
                             </div>
@@ -863,7 +863,7 @@ foreach ($answers as $answer) {
                     <?php endif; ?>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
+                    <button type="button" class="bastan btn btn-secondary" data-bs-dismiss="modal">بستن</button>
                     <button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#addSubjectModal">
                         <i class="fas fa-plus me-2"></i>
                         افزودن کتاب جدید

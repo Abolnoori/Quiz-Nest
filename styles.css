@@ -74,8 +74,71 @@ body {
   color: #dc3545;
   font-weight: bold;
 }
+.modal-footer {
+  justify-content: space-between;
+}
 
 @media (max-width: 768px) {
+  .bastan {
+    width: 45% !important;
+  }
+  .bazgashd {
+    margin-left: 0px !important;
+  }
+  .form-control {
+    font-size: 13px !important;
+  }
+  .modal-body{
+    font-size: 14px !important;
+  }
+  .safebaed {
+    margin-bottom: 140px !important;
+  }
+  #editForm {
+    font-size: 14px !important;
+  }
+  .editFormTitle {
+    max-width: 200px !important;
+    overflow: hidden !important;
+  }
+
+  .modiriat {
+    font-size: 12px !important;
+  }
+  .virayesh {
+    padding: 8px 12px !important;
+    height: 41px !important;
+  }
+  .modiriat-t {
+    font-size: 14px !important;
+    width: 170px !important;
+    overflow: hidden !important;
+  }
+  .dropdown-menu {
+    right: 0px !important;
+    font-size: 14px !important;
+  }
+  .navbar-brand {
+    font-size: 18px;
+    margin: 0px;
+  }
+  .user-menu-btn {
+    gap: 6px;
+  }
+
+  .ketab-div {
+    display: flex;
+    flex-direction: column;
+  }
+  .title-hed {
+    margin-bottom: 24px;
+  }
+  .btn,
+  .btn-outline-primary {
+    font-size: 14px;
+    padding: 8px 16px;
+  }
+
   .card-body {
     padding: 1rem;
   }
@@ -84,12 +147,13 @@ body {
     grid-template-columns: repeat(2, 1fr) !important;
   }
 }
-.user-menu-btn{
+.user-menu-btn {
   gap: 10px;
 }
 i {
-  margin: 0px; margin-left: 10px;
+  margin: 0px;
+  margin-left: 10px;
 }
-.time-input{
+.time-input {
   font-size: 22px;
 }
