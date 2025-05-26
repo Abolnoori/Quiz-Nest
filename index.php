@@ -774,7 +774,7 @@ foreach ($answers as $answer) {
         .progress-text {
             font-size: 0.85rem;
             color: #6c757d;
-            margin-top: 4px;
+            margin-top: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -882,9 +882,9 @@ foreach ($answers as $answer) {
     <div class="timer-display" id="timerDisplay">00:00</div>
 
     <!-- اضافه کردن نوتیفیکیشن -->
-    <div class="custom-notification" id="timerNotification">
-        <i class="fas fa-hourglass-end"></i>
-        آخ آخ! تایمت تموم شد
+    <div class="ackack custom-notification" id="timerNotification">
+        <i  class=" fas fa-hourglass-end"></i>
+      آخ! تایمت تموم شد
     </div>
 
     <div class="container">
@@ -1796,7 +1796,7 @@ foreach ($answers as $answer) {
             .then(data => {
                 hideLoader();
                 if (data.success) {
-                    showNotification('تغییرات با موفقیت ذخیره شد', 'success');
+                    showNotification('تغییرات  ذخیره شد', 'success');
                     setTimeout(() => location.reload(), 1500);
                 } else {
                     showNotification(data.message || 'خطا در ذخیره تغییرات', 'error');

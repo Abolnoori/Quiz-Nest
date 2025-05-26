@@ -79,6 +79,10 @@ body {
 }
 
 @media (max-width: 768px) {
+
+  .ackack{
+    font-size: 14px !important;
+  }
   .bastan {
     width: 45% !important;
   }
@@ -115,7 +119,8 @@ body {
     overflow: hidden !important;
   }
   .dropdown-menu {
-    right: 0px !important;
+    left: 0px !important;
+    right: auto !important;
     font-size: 14px !important;
   }
   .navbar-brand {
