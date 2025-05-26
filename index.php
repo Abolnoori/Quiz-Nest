@@ -66,8 +66,34 @@ foreach ($answers as $answer) {
             transform: translateY(-2px);
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
+        .book-btn .book-name {
+            max-width: 200px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: block;
+        }
+        .book-btn:hover .book-name.overflow {
+            animation: scroll-text 8s linear infinite;
+        }
+        @keyframes scroll-text {
+            0% { transform: translateX(0%); }
+            45% { transform: translateX(calc(-100% + 200px)); }
+            55% { transform: translateX(calc(-100% + 200px)); }
+            100% { transform: translateX(0%); }
+        }
         .module-btn {
             margin-bottom: 0.5rem;
+        }
+        .module-name {
+            max-width: 180px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: block;
+        }
+        .module-name.overflow {
+            animation: scroll-text 8s linear infinite;
         }
         .answer-grid {
             display: grid;
@@ -555,7 +581,257 @@ foreach ($answers as $answer) {
                 transform: translateY(0);
             }
         }
+
+        /* در بخش مدیریت کتاب‌ها */
+        #manageSubjectsModal .modiriat-t {
+            max-width: 250px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: block;
+        }
+        #manageSubjectsModal .list-group-item:hover .modiriat-t.overflow {
+            animation: scroll-text 8s linear infinite;
+        }
+        .char-counter {
+            font-size: 0.8rem;
+            color: #6c757d;
+            text-align: left;
+            margin-top: 0.25rem;
+        }
+        .char-counter.limit-near {
+            color: #ffc107;
+        }
+        .char-counter.limit-reached {
+            color: #dc3545;
+        }
+
+        /* استایل‌های جدید برای تایمر آیفون */
+        .timer-picker {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            padding: 20px 0;
+            background: #f8f9fa;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+        }
+
+        .time-column {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            height: 120px;
+            overflow: hidden;
+        }
+
+        .time-column:not(:last-child)::after {
+            content: ':';
+            position: absolute;
+            right: -10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .time-scroll {
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+
+        .time-item {
+            height: 40px;
+            width: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #333;
+            font-weight: 500;
+            user-select: none;
+        }
+
+        .time-item.selected {
+            font-size: 28px;
+            font-weight: bold;
+            color: #2196F3;
+        }
+
+        .time-column-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            background: linear-gradient(to bottom,
+                rgba(248, 249, 250, 0.9) 0%,
+                rgba(248, 249, 250, 0) 30%,
+                rgba(248, 249, 250, 0) 70%,
+                rgba(248, 249, 250, 0.9) 100%
+            );
+        }
+
+        .time-column-highlight {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 40px;
+            transform: translateY(-50%);
+            background: rgba(33, 150, 243, 0.1);
+            border-top: 1px solid rgba(33, 150, 243, 0.2);
+            border-bottom: 1px solid rgba(33, 150, 243, 0.2);
+            pointer-events: none;
+        }
+
+        /* استایل‌های جدید برای تایمر ساده */
+        .timer-inputs {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 1.5rem;
+            direction: ltr;
+        }
+
+        .timer-input-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .timer-input-group label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .timer-input-group input {
+            width: 80px;
+            height: 60px;
+            font-size: 28px;
+            text-align: center;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 0;
+            -moz-appearance: textfield;
+            background: #f8f9fa;
+        }
+
+        .timer-input-group input::-webkit-outer-spin-button,
+        .timer-input-group input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .timer-separator {
+            font-size: 32px;
+            font-weight: bold;
+            color: #333;
+            margin-top: 25px;
+        }
+
+        /* استایل‌های نوار پیشرفت */
+        .progress-line {
+            width: 100%;
+            height: 4px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            margin-top: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-line .progress-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            border-radius: 4px;
+            width: 0;
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .progress-fill.low {
+            background: #dc3545;  /* قرمز */
+        }
+
+        .progress-fill.medium {
+            background: #ffc107;  /* زرد */
+        }
+
+        .progress-fill.high {
+            background: #28a745;  /* سبز */
+        }
+
+        .progress-text {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-top: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .progress-status {
+            font-weight: 500;
+            color: #495057;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .progress-status i {
+            font-size: 0.9rem;
+        }
+
+        .progress-percent {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        .book-btn:hover .progress-text {
+            color: #2196F3;
+        }
+
+        .book-btn:hover .progress-status i {
+            transform: scale(1.2);
+        }
+
+        .progress-status i {
+            transition: transform 0.2s ease;
+        }
+
+        .progress-status.complete i { color: #28a745; }
+        .progress-status.good i { color: #17a2b8; }
+        .progress-status.half i { color: #ffc107; }
+        .progress-status.start i { color: #dc3545; }
+        .progress-status.none i { color: #6c757d; }
     </style>
+
+    <?php
+    // تابع کمکی برای تولید متن و کلاس وضعیت
+    function getProgressStatus($percent) {
+        if ($percent == 100) {
+            return ['<i class="fas fa-check-circle"></i> تموم شد!', 'complete'];
+        } elseif ($percent >= 60) {
+            return ['<i class="fas fa-fire"></i> عالی پیش میری', 'good'];
+        } elseif ($percent >= 30) {
+            return ['<i class="fas fa-running"></i> تو راهی', 'half'];
+        } elseif ($percent > 0) {
+            return ['<i class="fas fa-hourglass-start"></i> تازه اولشه', 'start'];
+        } else {
+            return ['<i class="fas fa-book"></i> منتظر شروع', 'none'];
+        }
+    }
+    ?>
 </head>
 <body>
     <!-- لودر -->
@@ -639,9 +915,39 @@ foreach ($answers as $answer) {
                 <?php foreach ($subjects as $subject): ?>
                 <div class="position-relative">
                     <button class="btn btn-lg btn-outline-primary book-btn w-100" onclick="showModules(<?php echo $subject['id']; ?>)">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <span><?php echo htmlspecialchars($subject['name']); ?></span>
-                            <small class="text-muted"><?php echo htmlspecialchars($subject['grade']); ?></small>
+                        <div class="d-flex flex-column w-100">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <span class="book-name"><?php echo htmlspecialchars($subject['name']); ?></span>
+                                <small class="text-muted"><?php echo htmlspecialchars($subject['grade']); ?></small>
+                            </div>
+                            <?php
+                                // محاسبه درصد پیشرفت برای هر کتاب
+                                $totalQuestions = 0;
+                                $answeredQuestions = 0;
+                                if (isset($modules[$subject['id']])) {
+                                    foreach ($modules[$subject['id']] as $module) {
+                                        $totalQuestions += $module['questions_count'];
+                                        foreach ($userAnswers as $key => $value) {
+                                            if (strpos($key, "module_{$module['id']}_") === 0) {
+                                                $answeredQuestions++;
+                                            }
+                                        }
+                                    }
+                                }
+                                $progressPercent = $totalQuestions > 0 ? round(($answeredQuestions / $totalQuestions) * 100) : 0;
+                                $progressClass = $progressPercent < 30 ? 'low' : ($progressPercent < 60 ? 'medium' : 'high');
+                                
+                                // متن وضعیت پیشرفت
+                                $progressStatus = getProgressStatus($progressPercent);
+                            ?>
+                            <div class="progress-line">
+                                <div class="progress-fill <?php echo $progressClass; ?>" 
+                                     data-progress="<?php echo $progressPercent; ?>"></div>
+                            </div>
+                            <div class="progress-text">
+                                <span class="progress-status <?php echo $progressStatus[1]; ?>"><?php echo $progressStatus[0]; ?></span>
+                                <span class="progress-percent"><?php echo $progressPercent; ?>%</span>
+                            </div>
                         </div>
                     </button>
                 </div>
@@ -693,11 +999,17 @@ foreach ($answers as $answer) {
                     <form id="addSubjectForm" action="add_subject.php" method="POST">
                         <div class="mb-3">
                             <label class="form-label">نام کتاب</label>
-                            <input type="text" class="form-control" name="name" required>
+                            <input type="text" class="form-control book-name-input" name="name" 
+                                   maxlength="26" required 
+                                   oninput="updateCharCounter(this)">
+                            <div class="char-counter">0 / 26</div>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">پایه تحصیلی</label>
-                            <input type="text" class="form-control" name="grade" required>
+                            <input type="text" class="form-control grade-input" name="grade" 
+                                   maxlength="16" required 
+                                   oninput="updateCharCounter(this)">
+                            <div class="char-counter">0 / 16</div>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">تعداد سوال هر پودمان</label>
@@ -774,7 +1086,17 @@ foreach ($answers as $answer) {
                     <button type="button" class="btn-close ms-0 me-auto" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body timer-modal">
-                    <input style="font-size: 22px;" type="number" class="time-input" id="timerInput" placeholder="زمان به دقیقه" min="1" max="180">
+                    <div class="timer-inputs">
+                        <div class="timer-input-group">
+                            <label>ساعت</label>
+                            <input type="number" id="hoursInput" min="0" max="3" value="0">
+                        </div>
+                        <div class="timer-separator">:</div>
+                        <div class="timer-input-group">
+                            <label>دقیقه</label>
+                            <input type="number" id="minutesInput" min="0" max="59" value="0">
+                        </div>
+                    </div>
                     <button class="btn btn-primary w-100" onclick="startTimer()">شروع تایمر</button>
                 </div>
             </div>
@@ -836,11 +1158,17 @@ foreach ($answers as $answer) {
                                 <div class="row g-3">
                                     <div class="col-md-6">
                                         <label class="form-label">نام کتاب</label>
-                                        <input type="text" class="form-control" id="edit_name" required>
+                                        <input type="text" class="form-control book-name-input" id="edit_name" 
+                                               maxlength="26" required 
+                                               oninput="updateCharCounter(this)">
+                                        <div class="char-counter">0 / 26</div>
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">پایه تحصیلی</label>
-                                        <input type="text" class="form-control" id="edit_grade" required>
+                                        <input type="text" class="form-control grade-input" id="edit_grade" 
+                                               maxlength="16" required 
+                                               oninput="updateCharCounter(this)">
+                                        <div class="char-counter">0 / 16</div>
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">تعداد سوال هر پودمان</label>
@@ -888,6 +1216,8 @@ foreach ($answers as $answer) {
         let timerInterval;
         let remainingTime = 0;
         let timerActive = false;
+        let selectedHours = 0;
+        let selectedMinutes = 0;
 
         // نمایش/مخفی کردن لودر
         function showLoader() {
@@ -949,21 +1279,59 @@ foreach ($answers as $answer) {
             
             const moduleList = document.getElementById('moduleList');
             moduleList.innerHTML = modules[subjectId].map(module => {
-                // Count answered questions for this module
                 const answeredCount = Object.keys(userAnswers).filter(key => 
                     key.startsWith(`module_${module.id}_`) && userAnswers[key]
                 ).length;
+                
+                const progressPercent = Math.round((answeredCount / module.questions_count) * 100);
+                const progressClass = progressPercent < 30 ? 'low' : (progressPercent < 60 ? 'medium' : 'high');
+                
+                // تعیین وضعیت پیشرفت
+                let statusIcon, statusText, statusClass;
+                if (progressPercent == 100) {
+                    statusIcon = 'check-circle';
+                    statusText = 'تموم شد!';
+                    statusClass = 'complete';
+                } else if (progressPercent >= 60) {
+                    statusIcon = 'fire';
+                    statusText = 'عالی پیش میری';
+                    statusClass = 'good';
+                } else if (progressPercent >= 30) {
+                    statusIcon = 'running';
+                    statusText = 'تو راهی';
+                    statusClass = 'half';
+                } else if (progressPercent > 0) {
+                    statusIcon = 'hourglass-start';
+                    statusText = 'تازه اولشه';
+                    statusClass = 'start';
+                } else {
+                    statusIcon = 'book';
+                    statusText = 'منتظر شروع';
+                    statusClass = 'none';
+                }
                 
                 return `
                     <div class="position-relative">
                         <button class="btn btn-lg btn-outline-primary book-btn w-100" 
                                 onclick="showQuestions(${module.id})">
-                            <div class="d-flex align-items-center justify-content-between">
-                                <div>
-                                    <span>${module.name}</span>
-                                    <span class="answered-count me-2">${answeredCount} / ${module.questions_count}</span>
+                            <div class="d-flex flex-column w-100">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <span class="module-name">${module.name}</span>
+                                    </div>
+                                    <small class="text-muted">${module.questions_count} سوال</small>
                                 </div>
-                                <small class="text-muted">${module.questions_count} سوال</small>
+                                <div class="progress-line">
+                                    <div class="progress-fill ${progressClass}" 
+                                         data-progress="${progressPercent}"></div>
+                                </div>
+                                <div class="progress-text">
+                                    <span class="progress-status ${statusClass}">
+                                        <i class="fas fa-${statusIcon}"></i>
+                                        ${statusText}
+                                    </span>
+                                    <span class="progress-percent">${progressPercent}%</span>
+                                </div>
                             </div>
                         </button>
                     </div>
@@ -977,6 +1345,34 @@ foreach ($answers as $answer) {
                 currentPage = 0;
                 saveState();
             }
+
+            // اجرای انیمیشن نوار پیشرفت بعد از رندر شدن المان‌ها
+            setTimeout(animateProgressBars, 100);
+            checkTextOverflow();
+        }
+
+        // بررسی overflow برای متن‌های طولانی
+        function checkTextOverflow() {
+            // بررسی نام کتاب‌ها
+            document.querySelectorAll('.book-name').forEach(element => {
+                if (element.scrollWidth > element.clientWidth) {
+                    element.classList.add('overflow');
+                }
+            });
+
+            // بررسی نام پودمان‌ها
+            document.querySelectorAll('.module-name').forEach(element => {
+                if (element.scrollWidth > element.clientWidth) {
+                    element.classList.add('overflow');
+                }
+            });
+
+            // بررسی نام‌ها در مودال مدیریت
+            document.querySelectorAll('.modiriat-t').forEach(element => {
+                if (element.scrollWidth > element.clientWidth) {
+                    element.classList.add('overflow');
+                }
+            });
         }
 
         // نمایش سوالات یک پودمان
@@ -1085,6 +1481,7 @@ foreach ($answers as $answer) {
             if (currentPage > 0) {
                 currentPage--;
                 showQuestions(currentModule.id);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         }
 
@@ -1093,6 +1490,7 @@ foreach ($answers as $answer) {
             if ((currentPage + 1) * 6 < currentModule.questions_count) {
                 currentPage++;
                 showQuestions(currentModule.id);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         }
 
@@ -1105,15 +1503,99 @@ foreach ($answers as $answer) {
             }
         }
 
+        // ذخیره وضعیت تایمر
+        function saveTimerState() {
+            if (timerActive && remainingTime > 0) {
+                const timerState = {
+                    remainingTime,
+                    timerActive,
+                    startTime: Date.now()
+                };
+                localStorage.setItem('timerState', JSON.stringify(timerState));
+            } else {
+                localStorage.removeItem('timerState');
+            }
+        }
+
+        // بازیابی وضعیت تایمر
+        function restoreTimerState() {
+            const savedState = localStorage.getItem('timerState');
+            if (!savedState) return;
+
+            try {
+                const state = JSON.parse(savedState);
+                if (state.timerActive) {
+                    const elapsedTime = Math.floor((Date.now() - state.startTime) / 1000);
+                    remainingTime = Math.max(0, state.remainingTime - elapsedTime);
+                    
+                    if (remainingTime > 0) {
+                        timerActive = true;
+                        const timerDisplay = document.getElementById('timerDisplay');
+                        timerDisplay.classList.add('active');
+                        document.querySelector('.floating-timer-btn i').className = 'fas fa-stop';
+                        updateTimerDisplay();
+                        startTimerInterval();
+                    } else {
+                        localStorage.removeItem('timerState');
+                    }
+                }
+            } catch (error) {
+                console.error('Error restoring timer state:', error);
+                localStorage.removeItem('timerState');
+            }
+        }
+
+        // راه‌اندازی تایمر پیکر
+        function initializeTimerPicker() {
+            const hourScroll = document.querySelector('#hourPicker .time-scroll');
+            const minuteScroll = document.querySelector('#minutePicker .time-scroll');
+            
+            // ساخت آیتم‌های ساعت (0-3)
+            for (let i = 0; i <= 3; i++) {
+                const item = document.createElement('div');
+                item.className = 'time-item' + (i === 0 ? ' selected' : '');
+                item.textContent = i.toString().padStart(2, '0');
+                item.onclick = () => selectTime(hourScroll, i, 'hour');
+                hourScroll.appendChild(item);
+            }
+            
+            // ساخت آیتم‌های دقیقه (0-59)
+            for (let i = 0; i <= 59; i++) {
+                const item = document.createElement('div');
+                item.className = 'time-item' + (i === 0 ? ' selected' : '');
+                item.textContent = i.toString().padStart(2, '0');
+                item.onclick = () => selectTime(minuteScroll, i, 'minute');
+                minuteScroll.appendChild(item);
+            }
+        }
+
+        // انتخاب زمان
+        function selectTime(scrollElement, value, type) {
+            const items = scrollElement.children;
+            for (let item of items) {
+                item.classList.remove('selected');
+            }
+            items[value].classList.add('selected');
+            
+            if (type === 'hour') {
+                selectedHours = value;
+            } else {
+                selectedMinutes = value;
+            }
+        }
+
         // شروع تایمر
         function startTimer() {
-            const minutes = parseInt(document.getElementById('timerInput').value);
-            if (isNaN(minutes) || minutes <= 0 || minutes > 180) {
-                alert('لطفاً یک عدد بین 1 تا 180 وارد کنید.');
+            const hours = parseInt(document.getElementById('hoursInput').value) || 0;
+            const minutes = parseInt(document.getElementById('minutesInput').value) || 0;
+            const totalMinutes = (hours * 60) + minutes;
+
+            if (totalMinutes <= 0 || totalMinutes > 180) {
+                alert('لطفاً زمان معتبری بین 1 تا 180 دقیقه انتخاب کنید');
                 return;
             }
 
-            remainingTime = minutes * 60;
+            remainingTime = totalMinutes * 60;
             timerActive = true;
             const timerDisplay = document.getElementById('timerDisplay');
             timerDisplay.classList.add('active');
@@ -1125,18 +1607,37 @@ foreach ($answers as $answer) {
             
             // شروع تایمر
             updateTimerDisplay();
+            startTimerInterval();
+            saveTimerState();
+        }
+
+        // محدود کردن ورودی‌ها
+        document.getElementById('hoursInput').addEventListener('input', function() {
+            if (this.value > 3) this.value = 3;
+            if (this.value < 0) this.value = 0;
+        });
+
+        document.getElementById('minutesInput').addEventListener('input', function() {
+            if (this.value > 59) this.value = 59;
+            if (this.value < 0) this.value = 0;
+        });
+
+        // شروع اینتروال تایمر
+        function startTimerInterval() {
+            clearInterval(timerInterval);
             timerInterval = setInterval(() => {
                 remainingTime--;
                 updateTimerDisplay();
                 
-                // بررسی زمان کمتر از یک دقیقه
                 if (remainingTime <= 60) {
-                    timerDisplay.classList.add('warning');
+                    document.getElementById('timerDisplay').classList.add('warning');
                 }
                 
                 if (remainingTime <= 0) {
                     stopTimer();
                     showTimerNotification();
+                } else {
+                    saveTimerState();
                 }
             }, 1000);
         }
@@ -1145,8 +1646,10 @@ foreach ($answers as $answer) {
         function stopTimer() {
             clearInterval(timerInterval);
             timerActive = false;
-            document.getElementById('timerDisplay').classList.remove('active');
+            remainingTime = 0;
+            document.getElementById('timerDisplay').classList.remove('active', 'warning');
             document.querySelector('.floating-timer-btn i').className = 'fas fa-clock';
+            localStorage.removeItem('timerState');
         }
 
         // بروزرسانی نمایش تایمر
@@ -1243,8 +1746,12 @@ foreach ($answers as $answer) {
             
             if (subject) {
                 document.getElementById('edit_subject_id').value = subject.id;
-                document.getElementById('edit_name').value = subject.name;
-                document.getElementById('edit_grade').value = subject.grade;
+                const nameInput = document.getElementById('edit_name');
+                nameInput.value = subject.name;
+                updateCharCounter(nameInput); // بروزرسانی شمارنده برای نام فعلی
+                const gradeInput = document.getElementById('edit_grade');
+                gradeInput.value = subject.grade;
+                updateCharCounter(gradeInput); // بروزرسانی شمارنده برای پایه فعلی
                 document.getElementById('edit_questions_count').value = subject.questions_count;
                 document.getElementById('editFormTitle').textContent = `ویرایش کتاب: ${subject.name}`;
                 
@@ -1380,8 +1887,66 @@ foreach ($answers as $answer) {
             });
         }
 
+        // تابع بروزرسانی شمارنده کاراکترها
+        function updateCharCounter(input) {
+            const counter = input.nextElementSibling;
+            const currentLength = input.value.length;
+            const maxLength = input.maxLength;
+            counter.textContent = `${currentLength} / ${maxLength}`;
+
+            // تغییر رنگ شمارنده بر اساس تعداد کاراکترها
+            counter.classList.remove('limit-near', 'limit-reached');
+            if (currentLength >= maxLength) {
+                counter.classList.add('limit-reached');
+            } else if (currentLength >= maxLength * 0.8) {
+                counter.classList.add('limit-near');
+            }
+        }
+
+        // اضافه کردن اعتبارسنجی به فرم افزودن کتاب
+        document.getElementById('addSubjectForm').addEventListener('submit', function(e) {
+            const nameInput = this.querySelector('input[name="name"]');
+            const gradeInput = this.querySelector('input[name="grade"]');
+            
+            if (nameInput.value.length > 26) {
+                e.preventDefault();
+                alert('نام کتاب نمی‌تواند بیشتر از 26 حرف باشد');
+                return;
+            }
+            
+            if (gradeInput.value.length > 16) {
+                e.preventDefault();
+                alert('پایه تحصیلی نمی‌تواند بیشتر از 16 حرف باشد');
+                return;
+            }
+        });
+
         // اجرای اولیه
-        document.addEventListener('DOMContentLoaded', restoreState);
+        document.addEventListener('DOMContentLoaded', function() {
+            restoreState();
+            checkTextOverflow();
+            restoreTimerState(); // بازیابی وضعیت تایمر در لود صفحه
+            animateProgressBars();
+        });
+
+        // اضافه کردن فراخوانی تابع بررسی overflow بعد از باز شدن مودال مدیریت
+        document.getElementById('manageSubjectsModal').addEventListener('shown.bs.modal', function() {
+            checkTextOverflow();
+        });
+
+        // تابع جدید برای اعمال انیمیشن نوار پیشرفت
+        function animateProgressBars() {
+            const progressBars = document.querySelectorAll('.progress-fill');
+            progressBars.forEach(bar => {
+                // ابتدا عرض را صفر می‌کنیم
+                bar.style.width = '0';
+                
+                // کمی تاخیر برای اجرای انیمیشن
+                setTimeout(() => {
+                    bar.style.width = bar.getAttribute('data-progress') + '%';
+                }, 50);
+            });
+        }
     </script>
 </body>
 </html>

@@ -78,4 +78,13 @@ try {
     die("Error adding questions_count column: " . $e->getMessage());
 }
 
+// تنظیمات اولیه
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+// تنظیمات جلسه
+ini_set('session.gc_maxlifetime', 86400); // 24 ساعت
+ini_set('session.cookie_lifetime', 86400); // 24 ساعت
+session_set_cookie_params(86400); // 24 ساعت
 session_start(); 
