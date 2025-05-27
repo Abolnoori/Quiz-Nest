@@ -10,7 +10,7 @@ if (!isset($_SESSION['user'])) {
 $user = $_SESSION['user'];
 
 // دریافت لیست کتاب‌های کاربر
-$stmt = $pdo->prepare("SELECT * FROM subjects WHERE user_id = ?");
+$stmt = $pdo->prepare("SELECT * FROM subjects WHERE user_id = ? ORDER BY created_at DESC");
 $stmt->execute([$user['id']]);
 $subjects = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -1031,6 +1031,108 @@ foreach ($answers as $answer) {
                 padding: 0.75rem;
             }
         }
+
+        /* استایل برای نمایش شماره شروع */
+        .module-question-count[data-start]::before,
+        .edit-module-question-count[data-start]::before {
+            content: attr(data-start);
+            position: absolute;
+            left: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.8em;
+            color: #2196F3;
+            background: #E3F2FD;
+            padding: 2px 6px;
+            border-radius: 4px;
+            z-index: 1;
+        }
+
+        .col-md-6 {
+            position: relative;
+        }
+
+        /* استایل‌های جدید برای چک باکس شماره‌گذاری متوالی */
+        .sequential-checkbox-wrapper {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .sequential-checkbox-wrapper:hover {
+            background: #e9ecef;
+            border-color: #dee2e6;
+        }
+
+        .sequential-checkbox-wrapper .form-check {
+            display: flex;
+            align-items: center;
+            margin: 0;
+            gap: 10px;
+        }
+
+        .sequential-checkbox-wrapper .form-check-input {
+            width: 20px;
+            height: 20px;
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .sequential-checkbox-wrapper .form-check-label {
+            cursor: pointer;
+            font-weight: 500;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sequential-info {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-top: 8px;
+            padding-right: 30px;
+        }
+
+        .sequential-checkbox-wrapper .form-check-input:checked ~ .form-check-label {
+            color: #2196F3;
+        }
+
+        .sequential-checkbox-wrapper .form-check-input:checked ~ .sequential-info {
+            color: #2196F3;
+        }
+
+        .sequential-checkbox-wrapper i {
+            font-size: 1.1rem;
+        }
+
+        /* استایل‌های جدید برای تولتیپ */
+        .help-icon {
+            color: #dc3545;
+            font-size: 14px;
+            margin-right: 5px;
+            cursor: help;
+        }
+
+        .sequential-checkbox-wrapper .form-check-label {
+            cursor: pointer;
+            font-weight: 500;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* استایل برای تولتیپ بوت‌استرپ */
+        .tooltip-inner {
+            max-width: 300px;
+            padding: 8px 12px;
+            font-family: "Vazirmatn";
+            line-height: 1.5;
+        }
     </style>
 
     <?php
@@ -1994,14 +2096,25 @@ foreach ($answers as $answer) {
                         </div>
                         <div class="mb-3">
                             <label class="form-label">تعداد سوالات هر پودمان</label>
-                            <div style="
-    height: 150px;
-    overflow: auto;
-" class="row">
+                            <div class="sequential-checkbox-wrapper">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="sequentialNumbering">
+                                    <label class="form-check-label" for="sequentialNumbering">
+                                        <i class="fas fa-sort-numeric-down"></i>
+                                        شماره‌گذاری متوالی سوالات
+                                        <i class="fas fa-question-circle help-icon" 
+                                           data-bs-toggle="tooltip" 
+                                           data-bs-placement="top" 
+                                           title="با فعال کردن این گزینه، شماره سوالات به صورت متوالی از پودمان اول تا آخر ادامه پیدا می‌کند"></i>
+                                    </label>
+                                </div>
+                             
+                            </div>
+                            <div style="height: 150px; overflow: auto;" class="row">
                                 <?php for($i = 1; $i <= 5; $i++): ?>
                                 <div class="col-md-6 mb-2">
                                     <label class="form-label small">پودمان <?php echo $i; ?></label>
-                                    <input type="number" class="form-control" name="questions_count[]" min="1" max="200" required>
+                                    <input type="number" class="form-control module-question-count" name="questions_count[]" min="1" max="200" required>
                                 </div>
                                 <?php endfor; ?>
                             </div>
@@ -2164,14 +2277,25 @@ foreach ($answers as $answer) {
                                 </div>
                                 <div class="mt-4">
                                     <label class="form-label">تعداد سوالات هر پودمان</label>
-                                    <div style="
-    height: 150px;
-    overflow: auto;
-" class="row" id="moduleQuestionInputs">
+                                    <div class="sequential-checkbox-wrapper">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="editSequentialNumbering">
+                                            <label class="form-check-label" for="editSequentialNumbering">
+                                                <i class="fas fa-sort-numeric-down"></i>
+                                                شماره‌گذاری متوالی سوالات
+                                                <i class="fas fa-question-circle help-icon" 
+                                                   data-bs-toggle="tooltip" 
+                                                   data-bs-placement="top" 
+                                                   title="با فعال کردن این گزینه، شماره سوالات به صورت متوالی از پودمان اول تا آخر ادامه پیدا می‌کند"></i>
+                                            </label>
+                                        </div>
+                    
+                                    </div>
+                                    <div style="height: 150px; overflow: auto;" class="row" id="moduleQuestionInputs">
                                         <?php for($i = 1; $i <= 5; $i++): ?>
                                         <div class="col-md-6 mb-2">
                                             <label class="form-label small">پودمان <?php echo $i; ?></label>
-                                            <input type="number" class="form-control" name="module_questions[]" 
+                                            <input type="number" class="form-control edit-module-question-count" name="module_questions[]" 
                                                    min="1" max="200" required>
                                         </div>
                                         <?php endfor; ?>
@@ -2406,8 +2530,19 @@ foreach ($answers as $answer) {
             const startIndex = currentPage * questionsPerPage;
             const endIndex = startIndex + questionsPerPage;
             
+            // محاسبه شماره شروع برای این پودمان
+            let questionStartNumber = 1;
+            const currentModuleIndex = modules[currentSubject.id].findIndex(m => m.id == moduleId);
+            if (currentModuleIndex > 0) {
+                // جمع تعداد سوالات پودمان‌های قبلی
+                questionStartNumber = modules[currentSubject.id]
+                    .slice(0, currentModuleIndex)
+                    .reduce((sum, module) => sum + module.questions_count, 0) + 1;
+            }
+            
             let html = '';
             for(let i = startIndex + 1; i <= Math.min(endIndex, currentModule.questions_count); i++) {
+                const absoluteQuestionNumber = questionStartNumber + i - 1;
                 const answerKey = `module_${moduleId}_${i}`;
                 const selectedAnswer = userAnswers[answerKey] || '';
                 
@@ -2416,7 +2551,7 @@ foreach ($answers as $answer) {
                         <button class="clear-answer-btn" onclick="clearAnswer(event, ${moduleId}, ${i})" title="پاک کردن پاسخ">
                             <i class="fas fa-times"></i>
                         </button>
-                        <div class="question-number">سوال ${i}</div>
+                        <div class="question-number">سوال ${absoluteQuestionNumber}</div>
                         <div class="answer-options">
                             ${[1, 2, 3, 4].map(option => `
                                 <div class="answer-option">
@@ -2769,10 +2904,10 @@ foreach ($answers as $answer) {
                 document.getElementById('edit_subject_id').value = subject.id;
                 const nameInput = document.getElementById('edit_name');
                 nameInput.value = subject.name;
-                updateCharCounter(nameInput); // بروزرسانی شمارنده برای نام فعلی
+                updateCharCounter(nameInput);
                 const gradeInput = document.getElementById('edit_grade');
                 gradeInput.value = subject.grade;
-                updateCharCounter(gradeInput); // بروزرسانی شمارنده برای پایه فعلی
+                updateCharCounter(gradeInput);
                 
                 // پر کردن تعداد سوالات هر پودمان
                 const moduleInputs = document.getElementsByName('module_questions[]');
@@ -2788,6 +2923,24 @@ foreach ($answers as $answer) {
                                     modules[index].value = module.questions_count;
                                 }
                             });
+                            
+                            // بررسی آیا شماره‌گذاری متوالی است
+                            let isSequential = true;
+                            let expectedStart = 1;
+                            for (let i = 0; i < data.modules.length; i++) {
+                                const count = data.modules[i].questions_count;
+                                if (i > 0 && count > 0) {
+                                    const prevTotal = data.modules.slice(0, i).reduce((sum, m) => sum + m.questions_count, 0);
+                                    if (prevTotal + 1 !== expectedStart) {
+                                        isSequential = false;
+                                        break;
+                                    }
+                                }
+                                expectedStart += count;
+                            }
+                            
+                            // تنظیم وضعیت چک باکس
+                            document.getElementById('editSequentialNumbering').checked = isSequential;
                         }
                     })
                     .catch(error => console.error('Error:', error));
@@ -2994,6 +3147,195 @@ foreach ($answers as $answer) {
                 }, 50);
             });
         }
+
+        // اضافه کردن کد جاوااسکریپت جدید
+        document.addEventListener('DOMContentLoaded', function() {
+            const sequentialCheckbox = document.getElementById('sequentialNumbering');
+            const questionInputs = document.querySelectorAll('.module-question-count');
+
+            // تابع کمکی برای اعمال شماره‌گذاری متوالی
+            function setupSequentialNumbering(inputs, checkbox) {
+                function updateStartNumbers() {
+                    if (checkbox.checked) {
+                        let nextStart = 1;
+                        inputs.forEach((input, index) => {
+                            const count = parseInt(input.value) || 0;
+                            if (count > 0) {
+                                if (index === 0) {
+                                    // پودمان اول تغییر نمی‌کند
+                                    nextStart = count + 1;
+                                } else {
+                                    // ذخیره مقدار فعلی
+                                    const currentCount = count;
+                                    // تنظیم شماره شروع جدید
+                                    input.setAttribute('data-start', nextStart);
+                                    // بروزرسانی شماره شروع بعدی
+                                    nextStart += currentCount;
+                                }
+                            }
+                        });
+                    } else {
+                        // حذف همه data-start ها
+                        inputs.forEach(input => input.removeAttribute('data-start'));
+                    }
+                }
+
+                // اضافه کردن event listener برای چک باکس
+                checkbox.addEventListener('change', updateStartNumbers);
+
+                // اضافه کردن event listener برای اینپوت‌ها
+                inputs.forEach((input, index) => {
+                    input.addEventListener('input', function() {
+                        if (checkbox.checked && index < inputs.length - 1) {
+                            updateStartNumbers();
+                        }
+                    });
+                });
+            }
+
+            // راه‌اندازی برای فرم افزودن
+            const addInputs = document.querySelectorAll('.module-question-count');
+            const addCheckbox = document.getElementById('sequentialNumbering');
+            if (addInputs.length && addCheckbox) {
+                setupSequentialNumbering(addInputs, addCheckbox);
+            }
+
+            // راه‌اندازی برای فرم ویرایش
+            const editInputs = document.querySelectorAll('.edit-module-question-count');
+            const editCheckbox = document.getElementById('editSequentialNumbering');
+            if (editInputs.length && editCheckbox) {
+                setupSequentialNumbering(editInputs, editCheckbox);
+            }
+        });
+
+        // اضافه کردن کد جاوااسکریپت برای فرم ویرایش
+        document.addEventListener('DOMContentLoaded', function() {
+            // کد قبلی
+            const sequentialCheckbox = document.getElementById('sequentialNumbering');
+            const questionInputs = document.querySelectorAll('.module-question-count');
+            
+            // تابع بروزرسانی شماره‌های متوالی برای فرم افزودن
+            function updateSequentialNumbers(inputs) {
+                let startNumber = 1;
+                inputs.forEach((input, index) => {
+                    if (index > 0) {
+                        const prevValue = parseInt(inputs[index - 1].value) || 0;
+                        startNumber = prevValue > 0 ? prevValue + 1 : startNumber;
+                        input.value = startNumber + parseInt(input.value || 0) - 1;
+                    }
+                });
+            }
+
+            // اضافه کردن event listener برای چک باکس فرم افزودن
+            sequentialCheckbox?.addEventListener('change', function() {
+                if (this.checked) {
+                    updateSequentialNumbers(questionInputs);
+                }
+            });
+
+            // اضافه کردن event listener برای اینپوت‌های فرم افزودن
+            questionInputs.forEach((input, index) => {
+                input.addEventListener('input', function() {
+                    if (sequentialCheckbox.checked && index < questionInputs.length - 1) {
+                        let currentValue = parseInt(this.value) || 0;
+                        let nextStartNumber = currentValue > 0 ? currentValue + 1 : 1;
+                        
+                        // بروزرسانی شماره‌های بعدی
+                        for (let i = index + 1; i < questionInputs.length; i++) {
+                            const nextInput = questionInputs[i];
+                            const nextCount = parseInt(nextInput.value || 0);
+                            if (nextCount > 0) {
+                                nextInput.value = nextStartNumber;
+                                nextStartNumber = parseInt(nextInput.value) + 1;
+                            }
+                        }
+                    }
+                });
+            });
+
+            // کد جدید برای فرم ویرایش
+            const editSequentialCheckbox = document.getElementById('editSequentialNumbering');
+            const editQuestionInputs = document.querySelectorAll('.edit-module-question-count');
+
+            // اضافه کردن event listener برای چک باکس فرم ویرایش
+            editSequentialCheckbox?.addEventListener('change', function() {
+                if (this.checked) {
+                    updateSequentialNumbers(editQuestionInputs);
+                }
+            });
+
+            // اضافه کردن event listener برای اینپوت‌های فرم ویرایش
+            editQuestionInputs.forEach((input, index) => {
+                input.addEventListener('input', function() {
+                    if (editSequentialCheckbox.checked && index < editQuestionInputs.length - 1) {
+                        let currentValue = parseInt(this.value) || 0;
+                        let nextStartNumber = currentValue > 0 ? currentValue + 1 : 1;
+                        
+                        // بروزرسانی شماره‌های بعدی
+                        for (let i = index + 1; i < editQuestionInputs.length; i++) {
+                            const nextInput = editQuestionInputs[i];
+                            const nextCount = parseInt(nextInput.value || 0);
+                            if (nextCount > 0) {
+                                nextInput.value = nextStartNumber;
+                                nextStartNumber = parseInt(nextInput.value) + 1;
+                            }
+                        }
+                    }
+                });
+            });
+        });
+
+        // تابع جدید برای بررسی و اعمال شماره‌گذاری متوالی
+        function updateSequentialNumberingEdit() {
+            const checkbox = document.getElementById('editSequentialNumbering');
+            const inputs = document.getElementsByName('module_questions[]');
+            
+            if (checkbox.checked) {
+                let nextStart = 1;
+                Array.from(inputs).forEach((input, index) => {
+                    const count = parseInt(input.value) || 0;
+                    if (count > 0) {
+                        if (index === 0) {
+                            // پودمان اول تغییر نمی‌کند
+                            nextStart = count + 1;
+                        } else {
+                            input.setAttribute('data-start', nextStart.toString());
+                            nextStart += count;
+                        }
+                    }
+                });
+            } else {
+                Array.from(inputs).forEach(input => {
+                    input.removeAttribute('data-start');
+                });
+            }
+        }
+
+        // اضافه کردن event listener برای چک باکس
+        document.addEventListener('DOMContentLoaded', function() {
+            const editSequentialCheckbox = document.getElementById('editSequentialNumbering');
+            if (editSequentialCheckbox) {
+                editSequentialCheckbox.addEventListener('change', updateSequentialNumberingEdit);
+            }
+            
+            // اضافه کردن event listener برای اینپوت‌ها
+            const editInputs = document.getElementsByName('module_questions[]');
+            Array.from(editInputs).forEach(input => {
+                input.addEventListener('input', function() {
+                    if (editSequentialCheckbox.checked) {
+                        updateSequentialNumberingEdit();
+                    }
+                });
+            });
+        });
+
+        // فعال‌سازی تولتیپ‌ها
+        document.addEventListener('DOMContentLoaded', function() {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        });
     </script>
 </body>
 </html>
