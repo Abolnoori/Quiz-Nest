@@ -2080,21 +2080,21 @@ foreach ($answers as $answer) {
                 </div>
                 <div class="modal-body">
                     <form id="addSubjectForm" action="add_subject.php" method="POST">
-                        <div class="mb-3">
+                        <div class="faseleinputketab mb-3">
                             <label class="form-label">نام کتاب</label>
                             <input type="text" class="form-control book-name-input" name="name" 
                                    maxlength="26" required 
                                    oninput="updateCharCounter(this)">
                             <div class="char-counter">0 / 26</div>
                         </div>
-                        <div class="mb-3">
+                        <div class="faseleinputketab mb-3">
                             <label class="form-label">پایه تحصیلی</label>
                             <input type="text" class="form-control grade-input" name="grade" 
                                    maxlength="16" required 
                                    oninput="updateCharCounter(this)">
                             <div class="char-counter">0 / 16</div>
                         </div>
-                        <div class="mb-3">
+                        <div class="faseleinputketab mb-3">
                             <label class="form-label">تعداد سوالات هر پودمان</label>
                             <div class="sequential-checkbox-wrapper">
                                 <div class="form-check">
@@ -2110,7 +2110,7 @@ foreach ($answers as $answer) {
                                 </div>
                              
                             </div>
-                            <div style="height: 150px; overflow: auto;" class="row">
+                            <div style="height: 150px; overflow: auto;" class="scrolll row">
                                 <?php for($i = 1; $i <= 5; $i++): ?>
                                 <div class="col-md-6 mb-2">
                                     <label class="form-label small">پودمان <?php echo $i; ?></label>
@@ -2232,7 +2232,7 @@ foreach ($answers as $answer) {
                     <?php else: ?>
                         <!-- لیست کتاب‌ها -->
                         <div id="subjectsList">
-                            <div class="list-group">
+                            <div class="maxscrolllll list-group">
                                 <?php foreach ($subjects as $subject): ?>
                                     <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center p-3">
                                         <div class="modiriat">
@@ -2291,7 +2291,7 @@ foreach ($answers as $answer) {
                                         </div>
                     
                                     </div>
-                                    <div style="height: 150px; overflow: auto;" class="row" id="moduleQuestionInputs">
+                                    <div style="height: 150px; overflow: auto;" class="scrolll row" id="moduleQuestionInputs">
                                         <?php for($i = 1; $i <= 5; $i++): ?>
                                         <div class="col-md-6 mb-2">
                                             <label class="form-label small">پودمان <?php echo $i; ?></label>

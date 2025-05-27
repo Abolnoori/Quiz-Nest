@@ -1070,8 +1070,8 @@ body {
   justify-content: center;
   position: relative;
 }
-body{
-   margin-bottom: 80px;
+body {
+  margin-bottom: 80px;
 }
 .circular-progress::before {
   content: "";
@@ -1106,25 +1106,38 @@ body{
 .detail-item i {
   width: 20px;
 }
-  .nemodar-ckaty{
-    height: 280px !important;
-  }
+.nemodar-ckaty {
+  height: 280px !important;
+}
+.maxscrolllll {
+  max-height: 500px;
+  overflow: auto;
+}
 @media (max-width: 768px) {
+  .maxscrolllll {
+    max-height: 400px !important;
+    overflow: scroll !important;
+  }
+  .scrolll {
+    height: 170px !important;
+  }
+  .faseleinputketab {
+    margin-bottom: 8px !important;
+  }
   .amalkard {
     margin-bottom: 16px !important;
   }
-  .amalkard h5{
+  .amalkard h5 {
     font-size: 16px !important;
   }
-.performance-table{
-  font-size: 14px !important;
-}
-  .nemodar-ckaty{
+  .performance-table {
+    font-size: 14px !important;
+  }
+  .nemodar-ckaty {
     height: 270px !important;
   }
-  .chart-container{
+  .chart-container {
     padding: 8px !important;
-
   }
   .nemodar {
     display: flex !important;
