@@ -2001,7 +2001,7 @@ foreach ($answers as $answer) {
                                 <?php for($i = 1; $i <= 5; $i++): ?>
                                 <div class="col-md-6 mb-2">
                                     <label class="form-label small">پودمان <?php echo $i; ?></label>
-                                    <input type="number" class="form-control" name="questions_count[]" min="1" max="100" required>
+                                    <input type="number" class="form-control" name="questions_count[]" min="1" max="200" required>
                                 </div>
                                 <?php endfor; ?>
                             </div>
@@ -2172,7 +2172,7 @@ foreach ($answers as $answer) {
                                         <div class="col-md-6 mb-2">
                                             <label class="form-label small">پودمان <?php echo $i; ?></label>
                                             <input type="number" class="form-control" name="module_questions[]" 
-                                                   min="1" max="100" required>
+                                                   min="1" max="200" required>
                                         </div>
                                         <?php endfor; ?>
                                     </div>
@@ -2821,8 +2821,8 @@ foreach ($answers as $answer) {
                 return;
             }
 
-            if (questionsCounts.some(count => isNaN(count) || count < 1 || count > 100)) {
-                alert('تعداد سوالات هر پودمان باید بین 1 تا 100 باشد');
+            if (questionsCounts.some(count => isNaN(count) || count < 1 || count > 200)) {
+                alert('تعداد سوالات هر پودمان باید بین 1 تا 200 باشد');
                 return;
             }
 

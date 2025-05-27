@@ -19,8 +19,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     
     foreach ($questionsCounts as $count) {
-        if (!is_numeric($count) || $count < 1 || $count > 100) {
-            die("خطا: تعداد سوالات باید بین 1 تا 100 باشد");
+        if (!is_numeric($count) || $count < 1 || $count > 200) {
+            die("خطا: تعداد سوالات باید بین 1 تا 200 باشد");
         }
     }
     

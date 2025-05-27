@@ -31,9 +31,9 @@ if (!is_array($questions_counts) || count($questions_counts) !== 5) {
 }
 
 foreach ($questions_counts as $count) {
-    if (!is_numeric($count) || $count < 1 || $count > 100) {
+    if (!is_numeric($count) || $count < 1 || $count > 200) {
         header('Content-Type: application/json');
-        echo json_encode(['success' => false, 'message' => 'تعداد سوالات باید بین 1 تا 100 باشد']);
+        echo json_encode(['success' => false, 'message' => 'تعداد سوالات باید بین 1 تا 200 باشد']);
         exit;
     }
 }
