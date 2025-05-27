@@ -164,8 +164,14 @@ function updateSubjectList() {
         <div class="position-relative">
             <button class="btn btn-lg btn-outline-primary book-btn w-100" onclick="showModules('${id}')">
                 <div class="d-flex align-items-center justify-content-between">
-                    <span>${subject.name}</span>
-                    <small class="text-muted">${subject.grade}</small>
+                    <span class="book-name">${subject.name}</span>
+                    <div>
+                        <small class="text-muted">${subject.grade}</small>
+                        <button class="btn btn-sm btn-outline-secondary ms-2" 
+                                onclick="event.stopPropagation(); showModuleEditModal('${id}')">
+                            <i class="fas fa-cog"></i>
+                        </button>
+                    </div>
                 </div>
             </button>
         </div>
@@ -764,3 +770,110 @@ function restartExam() {
 
 // Initialize answers when page loads
 document.addEventListener("DOMContentLoaded", initAnswers);
+
+// نمایش مودال ویرایش پودمان‌ها
+function showModuleEditModal(subjectId) {
+  const subject = subjects[subjectId];
+  if (!subject) return;
+
+  const moduleEditForm = document.getElementById("moduleEditForm");
+  moduleEditForm.innerHTML = `
+        <input type="hidden" id="editingSubjectId" value="${subjectId}">
+        <div class="row mb-3">
+            <div class="col">
+                <h6 class="mb-3">کتاب: ${subject.name}</h6>
+            </div>
+        </div>
+        ${subject.modules
+          .map(
+            (module, index) => `
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">نام پودمان ${index + 1}</label>
+                    <input type="text" class="form-control module-name" 
+                           value="${module.name}" 
+                           data-module-id="${module.id}"
+                           placeholder="نام پودمان">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">تعداد سوالات</label>
+                    <input type="number" class="form-control module-questions" 
+                           value="${module.questions}" 
+                           data-module-id="${module.id}"
+                           min="1" max="100">
+                </div>
+            </div>
+        `
+          )
+          .join("")}
+    `;
+
+  const modal = new bootstrap.Modal(
+    document.getElementById("editModulesModal")
+  );
+  modal.show();
+}
+
+// ذخیره تغییرات پودمان‌ها
+function saveModuleChanges() {
+  const subjectId = document.getElementById("editingSubjectId").value;
+  const moduleRows = document.querySelectorAll(
+    "#moduleEditForm .row:not(:first-child)"
+  );
+  const modules = [];
+
+  moduleRows.forEach((row) => {
+    const nameInput = row.querySelector(".module-name");
+    const questionsInput = row.querySelector(".module-questions");
+    const defaultQuestions =
+      questionsInput.value ||
+      moduleRows[0].querySelector(".module-questions").value;
+
+    modules.push({
+      id: nameInput.getAttribute("data-module-id"),
+      name: nameInput.value.trim() || `پودمان ${modules.length + 1}`,
+      questions: parseInt(questionsInput.value) || parseInt(defaultQuestions),
+    });
+  });
+
+  // نمایش لودر
+  document.getElementById("loaderOverlay").classList.add("active");
+
+  // ارسال درخواست به سرور
+  fetch("save_module_changes.php", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      subject_id: subjectId,
+      modules: modules,
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        // بستن مودال و بروزرسانی صفحه
+        const modal = bootstrap.Modal.getInstance(
+          document.getElementById("editModulesModal")
+        );
+        modal.hide();
+
+        // نمایش پیام موفقیت‌آمیز
+        showNotification("تغییرات با موفقیت ذخیره شد", "success");
+
+        // بروزرسانی صفحه بعد از 1.5 ثانیه
+        setTimeout(() => location.reload(), 1500);
+      } else {
+        showNotification(data.message || "خطا در ذخیره تغییرات", "error");
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      showNotification("خطا در ارتباط با سرور", "error");
+    })
+    .finally(() => {
+      // مخفی کردن لودر
+      document.getElementById("loaderOverlay").classList.remove("active");
+    });
+}
