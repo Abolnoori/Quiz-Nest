@@ -46,7 +46,992 @@ foreach ($answers as $answer) {
     <link href="https://cdn.jsdelivr.net/npm/vazirmatn@33.0.3/Vazirmatn-font-face.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="styles.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: "Vazirmatn", system-ui, -apple-system, sans-serif;
+            background-color: #f8f9fa;
+            min-height: 100vh;
+        }
+        .navbar {
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        .book-btn {
+            margin-bottom: 1rem;
+            padding: 1.5rem;
+            text-align: right;
+            transition: all 0.3s ease;
+        }
+        .book-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .book-btn .book-name {
+            max-width: 200px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: block;
+        }
+        .book-btn:hover .book-name.overflow {
+            animation: scroll-text 8s linear infinite;
+        }
+        @keyframes scroll-text {
+            0% { transform: translateX(0%); }
+            45% { transform: translateX(calc(-100% + 200px)); }
+            55% { transform: translateX(calc(-100% + 200px)); }
+            100% { transform: translateX(0%); }
+        }
+        .module-btn {
+            margin-bottom: 0.5rem;
+        }
+        .module-name {
+            max-width: 180px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: block;
+        }
+        .module-name.overflow {
+            animation: scroll-text 8s linear infinite;
+        }
+        .answer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+        .answer-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .answer-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .question-number {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2196F3;
+            margin-bottom: 1rem;
+        }
+        .answer-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+        @media (max-width: 768px) {
+            .answer-options {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.8rem;
+            }
+            .answer-card {
+                padding: 1.2rem;
+            }
+            .answer-option label {
+                padding: 0.6rem;
+                font-size: 0.9rem;
+            }
+            .answer-option label:before {
+                width: 16px;
+                height: 16px;
+                margin-left: 8px;
+            }
+            .question-number {
+                font-size: 1rem;
+                margin-bottom: 0.8rem;
+            }
+        }
+        .answer-option {
+            position: relative;
+            padding: 0;
+            margin: 0;
+        }
+        .answer-option input[type="radio"] {
+            display: none;
+        }
+        .answer-option label {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin: 0;
+        }
+        .answer-option label:before {
+            content: '';
+            width: 20px;
+            height: 20px;
+            border: 2px solid #dee2e6;
+            border-radius: 50%;
+            margin-left: 12px;
+            transition: all 0.2s ease;
+        }
+        .answer-option input[type="radio"]:checked + label {
+            border-color: #2196F3;
+            background-color: #E3F2FD;
+        }
+        .answer-option input[type="radio"]:checked + label:before {
+            border-color: #2196F3;
+            background-color: #2196F3;
+            box-shadow: inset 0 0 0 4px #fff;
+        }
+        .answer-option label:hover {
+            border-color: #2196F3;
+        }
+        .btn-logout {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .btn-logout:hover {
+            background-color: #c82333;
+            transform: translateY(-1px);
+        }
+        .welcome-message {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        .section {
+            display: none;
+        }
+        .section.active {
+            display: block;
+        }
+        #emptyState {
+            text-align: center;
+            padding: 3rem;
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-top: 2rem;
+        }
+        #emptyState i {
+            font-size: 3rem;
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+        .user-menu-btn {
+            color: #333;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: white;
+        }
+        
+        .user-menu-btn:hover, .user-menu-btn:focus {
+            background: #f8f9fa;
+            color: #333;
+            text-decoration: none;
+        }
+        
+        .user-menu-btn i {
+            font-size: 1.5rem;
+        }
+        
+        .dropdown-item {
+            padding: 0.7rem 1rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .dropdown-item:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .dropdown-item i {
+            width: 20px;
+            text-align: center;
+        }
 
+        .floating-timer-btn {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #2196F3;
+            color: white;
+            border: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .floating-timer-btn:hover {
+            transform: scale(1.1);
+            background: #1976D2;
+        }
+
+        .floating-timer-btn i {
+            font-size: 1.5rem;
+        }
+
+        .timer-display {
+            position: fixed;
+            bottom: 80px;
+            left: 20px;
+            background: rgba(33, 150, 243, 0.9);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: none;
+            transition: all 0.3s ease;
+        }
+
+        .timer-display.warning {
+            background: rgba(244, 67, 54, 0.9);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .timer-display.active {
+            display: block;
+        }
+
+        /* استایل نوتیفیکیشن */
+        .custom-notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #dc3545;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 1100;
+            display: none;
+            text-align: center;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        .custom-notification i {
+            margin-left: 8px;
+            font-size: 1.2rem;
+        }
+
+        @keyframes slideDown {
+            from { transform: translate(-50%, -100%); }
+            to { transform: translate(-50%, 0); }
+        }
+
+        .timer-modal .time-input {
+            font-size: 2rem;
+            width: 100%;
+            text-align: center;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .clear-answer-btn {
+            position: absolute;
+            top: 0.8rem;
+            left: 0.8rem;
+            background: none;
+            border: none;
+            color: #adb5bd;
+            padding: 5px;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+        }
+
+        .answer-card:hover .clear-answer-btn {
+            opacity: 0.6;
+        }
+
+        .clear-answer-btn:hover {
+            opacity: 1;
+            color: #dc3545;
+            transform: scale(1.1);
+        }
+
+        .answered-count {
+            color: #28a745;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .clear-module-btn {
+            color: #6c757d;
+            border: none;
+            background: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .clear-module-btn:hover {
+            color: #dc3545;
+            background: rgba(220, 53, 69, 0.1);
+        }
+
+        .loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .loader-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #2196F3;
+            border-radius: 50%;
+            animation: spin 1s linear infinite, scale 0.3s ease;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes scale {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .section {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .section.active {
+            opacity: 1;
+        }
+
+        /* استایل برای مودال مدیریت کتاب‌ها */
+        #manageSubjectsModal .modal-content {
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        #manageSubjectsModal .modal-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #eee;
+            border-radius: 15px 15px 0 0;
+            padding: 1.5rem;
+        }
+
+        #manageSubjectsModal .modal-body {
+            padding: 1.5rem;
+        }
+
+        #manageSubjectsModal .table {
+            margin-bottom: 0;
+            border-collapse: separate;
+            border-spacing: 0 8px;
+        }
+
+        #manageSubjectsModal .table th {
+            font-weight: 600;
+            color: #495057;
+            border: none;
+            padding: 1rem;
+            background-color: #f8f9fa;
+        }
+
+        #manageSubjectsModal .table td {
+            vertical-align: middle;
+            padding: 1rem;
+            border: none;
+            background-color: white;
+        }
+
+        #manageSubjectsModal .table tr {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        #manageSubjectsModal .table tr:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #manageSubjectsModal .form-control {
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            padding: 0.5rem;
+            transition: all 0.2s ease;
+        }
+
+        #manageSubjectsModal .form-control:focus {
+            border-color: #2196F3;
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+        }
+
+        #manageSubjectsModal .btn-group {
+            gap: 0.5rem;
+        }
+
+        #manageSubjectsModal .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        #manageSubjectsModal .btn-outline-primary {
+            border-color: #2196F3;
+            color: #2196F3;
+        }
+
+        #manageSubjectsModal .btn-outline-primary:hover {
+            background-color: #2196F3;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        #manageSubjectsModal .btn-outline-danger {
+            border-color: #dc3545;
+            color: #dc3545;
+        }
+
+        #manageSubjectsModal .btn-outline-danger:hover {
+            background-color: #dc3545;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        /* استایل‌های جدید برای مدیریت کتاب‌ها */
+        #manageSubjectsModal .list-group-item {
+            transition: all 0.2s ease;
+            border-left: 4px solid transparent;
+        }
+
+        #manageSubjectsModal .list-group-item:hover {
+            border-left-color: #2196F3;
+            background-color: #f8f9fa;
+        }
+
+        #manageSubjectsModal .list-group-item h6 {
+            color: #333;
+            font-weight: 600;
+        }
+
+        #manageSubjectsModal .btn-outline-primary {
+            border-width: 2px;
+        }
+
+        #manageSubjectsModal .btn-outline-primary:hover {
+            transform: translateY(-1px);
+        }
+
+        #editForm {
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* در بخش مدیریت کتاب‌ها */
+        #manageSubjectsModal .modiriat-t {
+            max-width: 250px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: block;
+        }
+        #manageSubjectsModal .list-group-item:hover .modiriat-t.overflow {
+            animation: scroll-text 8s linear infinite;
+        }
+        .char-counter {
+            font-size: 0.8rem;
+            color: #6c757d;
+            text-align: left;
+            margin-top: 0.25rem;
+        }
+        .char-counter.limit-near {
+            color: #ffc107;
+        }
+        .char-counter.limit-reached {
+            color: #dc3545;
+        }
+
+        /* استایل‌های جدید برای تایمر آیفون */
+        .timer-picker {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            padding: 20px 0;
+            background: #f8f9fa;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+        }
+
+        .time-column {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            height: 120px;
+            overflow: hidden;
+        }
+
+        .time-column:not(:last-child)::after {
+            content: ':';
+            position: absolute;
+            right: -10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .time-scroll {
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+
+        .time-item {
+            height: 40px;
+            width: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #333;
+            font-weight: 500;
+            user-select: none;
+        }
+
+        .time-item.selected {
+            font-size: 28px;
+            font-weight: bold;
+            color: #2196F3;
+        }
+
+        .time-column-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            background: linear-gradient(to bottom,
+                rgba(248, 249, 250, 0.9) 0%,
+                rgba(248, 249, 250, 0) 30%,
+                rgba(248, 249, 250, 0) 70%,
+                rgba(248, 249, 250, 0.9) 100%
+            );
+        }
+
+        .time-column-highlight {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 40px;
+            transform: translateY(-50%);
+            background: rgba(33, 150, 243, 0.1);
+            border-top: 1px solid rgba(33, 150, 243, 0.2);
+            border-bottom: 1px solid rgba(33, 150, 243, 0.2);
+            pointer-events: none;
+        }
+
+        /* استایل‌های جدید برای تایمر ساده */
+        .timer-inputs {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 1.5rem;
+            direction: ltr;
+        }
+
+        .timer-input-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .timer-input-group label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .timer-input-group input {
+            width: 80px;
+            height: 60px;
+            font-size: 28px;
+            text-align: center;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 0;
+            -moz-appearance: textfield;
+            background: #f8f9fa;
+        }
+
+        .timer-input-group input::-webkit-outer-spin-button,
+        .timer-input-group input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .timer-separator {
+            font-size: 32px;
+            font-weight: bold;
+            color: #333;
+            margin-top: 25px;
+        }
+
+        /* استایل‌های نوار پیشرفت */
+        .progress-line {
+            width: 100%;
+            height: 4px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            margin-top: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-line .progress-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            border-radius: 4px;
+            width: 0;
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .progress-fill.low {
+            background: #dc3545;  /* قرمز */
+        }
+
+        .progress-fill.medium {
+            background: #ffc107;  /* زرد */
+        }
+
+        .progress-fill.high {
+            background: #28a745;  /* سبز */
+        }
+
+        .progress-text {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .progress-status {
+            font-weight: 500;
+            color: #495057;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .progress-status i {
+            font-size: 0.9rem;
+        }
+
+        .progress-percent {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        .book-btn:hover .progress-text {
+            color: #2196F3;
+        }
+
+        .book-btn:hover .progress-status i {
+            transform: scale(1.2);
+        }
+
+        .progress-status i {
+            transition: transform 0.2s ease;
+        }
+
+        .progress-status.complete i { color: #28a745; }
+        .progress-status.good i { color: #17a2b8; }
+        .progress-status.half i { color: #ffc107; }
+        .progress-status.start i { color: #dc3545; }
+        .progress-status.none i { color: #6c757d; }
+
+        /* استایل‌های جدید برای بخش آمار */
+        .stat-card {
+            background: #fff;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            height: 100%;
+            transition: transform 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card-content {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            background: rgba(33, 150, 243, 0.1);
+            color: #2196F3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .stat-icon.purple {
+            background: rgba(156, 39, 176, 0.1);
+            color: #9C27B0;
+        }
+
+        .stat-icon.green {
+            background: rgba(76, 175, 80, 0.1);
+            color: #4CAF50;
+        }
+
+        .stat-icon.orange {
+            background: rgba(255, 152, 0, 0.1);
+            color: #FF9800;
+        }
+
+        .stat-info h3 {
+            font-size: 1.8rem;
+            margin: 0;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .stat-info p {
+            margin: 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .stats-chart-card {
+            background: #fff;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        }
+
+        .stats-chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .stats-chart-header h5 {
+            margin: 0;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .chart-legend {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .legend-dot.blue {
+            background: #2196F3;
+        }
+
+        .stats-chart-body {
+            position: relative;
+            padding: 1rem 0;
+        }
+
+        .donut-center-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .donut-center-text h3 {
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .donut-center-text p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .stats-table-card {
+            background: #fff;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        }
+
+        .stats-table-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .stats-table-header h5 {
+            margin: 0;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .stats-table {
+            margin: 0;
+        }
+
+        .stats-table th {
+            font-weight: 500;
+            color: #666;
+            border-bottom: 2px solid #eee;
+            padding: 1rem;
+        }
+
+        .stats-table td {
+            padding: 1rem;
+            vertical-align: middle;
+            border-bottom: 1px solid #eee;
+        }
+
+        .stats-table .book-name {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .progress-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .progress {
+            flex: 1;
+            height: 6px;
+            background: #eee;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background: #2196F3;
+            border-radius: 3px;
+        }
+
+        .progress-text {
+            min-width: 45px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .stat-card {
+                padding: 1rem;
+            }
+
+            .stat-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+
+            .stat-info h3 {
+                font-size: 1.4rem;
+            }
+
+            .stats-chart-card, .stats-table-card {
+                padding: 1rem;
+            }
+
+            .stats-table th, .stats-table td {
+                padding: 0.75rem;
+            }
+        }
+    </style>
 
     <?php
     // تابع کمکی برای تولید متن و کلاس وضعیت
@@ -66,13 +1051,8 @@ foreach ($answers as $answer) {
     ?>
 </head>
 <body>
-    <!-- لودر صفحه -->
-    <div id="pageLoader" class="page-loader active">
-        <div class="loader"></div>
-    </div>
-
-    <!-- لودر برای عملیات‌های خاص -->
-    <div id="loaderOverlay" class="loader-overlay">
+    <!-- لودر -->
+    <div class="loader-overlay" id="loaderOverlay">
         <div class="loader"></div>
     </div>
 
@@ -125,63 +1105,63 @@ foreach ($answers as $answer) {
     </div>
 
     <div class="container">
+        <!-- نوار تب‌ها -->
+        <ul class="nav nav-tabs mb-4" id="mainTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="answers-tab" data-bs-toggle="tab" data-bs-target="#answers-content" type="button" role="tab">
+                    <i class="fas fa-book"></i>
+                    کتاب‌های من
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="stats-tab" data-bs-toggle="tab" data-bs-target="#stats-content" type="button" role="tab">
+                    <i class="fas fa-chart-bar"></i>
+                    آمار
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-content" type="button" role="tab">
+                    <i class="fas fa-user"></i>
+                    پنل کاربری
+                </button>
+            </li>
+        </ul>
+
+        <!-- محتوای تب‌ها -->
+        <div class="tab-content" id="mainTabsContent">
+            <!-- تب پاسخ‌دون -->
+            <div class="tab-pane fade show active" id="answers-content" role="tabpanel">
         <!-- بخش اصلی -->
         <div id="subjectSection" class="section active">
-            <!-- نوار تب‌ها -->
-            <ul class="nav nav-tabs mb-4" id="mainTabs" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="books-tab" data-bs-toggle="tab" data-bs-target="#books-content" type="button" role="tab" aria-controls="books-content" aria-selected="true">
-                        <i class="fas fa-book me-1"></i>
-                        کتاب‌های من
+            <div class="ketab-div d-flex justify-content-between align-items-center mb-4">
+                <h4 class="title-hed">کتاب‌های من</h4>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#manageSubjectsModal">
+                        <i class="fas fa-cog"></i>
+                        مدیریت کتاب‌ها
                     </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="stats-tab" data-bs-toggle="tab" data-bs-target="#stats-content" type="button" role="tab" aria-controls="stats-content" aria-selected="false">
-                        <i class="fas fa-chart-bar me-1"></i>
-                        آمار
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-content" type="button" role="tab" aria-controls="profile-content" aria-selected="false">
-                        <i class="fas fa-user me-1"></i>
-                        پنل کاربری
-                    </button>
-                </li>
-            </ul>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSubjectModal">
+                    <i class="fas fa-plus me-1"></i>
+                    افزودن کتاب جدید
+                </button>
+                </div>
+            </div>
 
-            <!-- محتوای تب‌ها -->
-            <div class="tab-content" id="mainTabsContent">
-                <!-- تب کتاب‌های من -->
-                <div class="tab-pane fade show active" id="books-content" role="tabpanel" aria-labelledby="books-tab">
-                    <div class="ketab-div d-flex justify-content-between align-items-center mb-4">
-                        <h4 class="title-hed">کتاب‌های من</h4>
-                        <div class="d-flex gap-2">
-                            <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#manageSubjectsModal">
-                                <i class="fas fa-cog"></i>
-                                مدیریت کتاب‌ها
-                            </button>
-                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSubjectModal">
-                                <i class="fas fa-plus me-1"></i>
-                                افزودن کتاب جدید
-                            </button>
-                        </div>
-                    </div>
-
-                    <?php if (empty($subjects)): ?>
-                    <div id="emptyState">
-                        <i class="fas fa-book mb-3"></i>
-                        <h5>هنوز کتابی اضافه نکرده‌اید</h5>
-                        <p class="text-muted">برای شروع، روی دکمه "افزودن کتاب جدید" کلیک کنید</p>
-                    </div>
-                    <?php else: ?>
-                    <div id="subjectList">
-                        <?php foreach ($subjects as $subject): ?>
-                        <div class="position-relative">
-                            <button class="btn btn-lg btn-outline-primary book-btn w-100" onclick="showModules(<?php echo $subject['id']; ?>)">
+            <?php if (empty($subjects)): ?>
+            <div id="emptyState">
+                <i class="fas fa-book mb-3"></i>
+                <h5>هنوز کتابی اضافه نکرده‌اید</h5>
+                <p class="text-muted">برای شروع، روی دکمه "افزودن کتاب جدید" کلیک کنید</p>
+            </div>
+            <?php else: ?>
+            <div id="subjectList">
+                <?php foreach ($subjects as $subject): ?>
+                <div class="position-relative">
+                    <button class="btn btn-lg btn-outline-primary book-btn w-100" onclick="showModules(<?php echo $subject['id']; ?>)">
                                 <div class="d-flex flex-column w-100">
-                                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center justify-content-between">
                                         <span class="book-name"><?php echo htmlspecialchars($subject['name']); ?></span>
-                                        <small class="text-muted"><?php echo htmlspecialchars($subject['grade']); ?></small>
+                            <small class="text-muted"><?php echo htmlspecialchars($subject['grade']); ?></small>
                                     </div>
                                     <?php
                                         // محاسبه درصد پیشرفت برای هر کتاب
@@ -211,106 +1191,12 @@ foreach ($answers as $answer) {
                                         <span class="progress-status <?php echo $progressStatus[1]; ?>"><?php echo $progressStatus[0]; ?></span>
                                         <span class="progress-percent"><?php echo $progressPercent; ?>%</span>
                                     </div>
-                                </div>
-                            </button>
                         </div>
-                        <?php endforeach; ?>
-                    </div>
-                    <?php endif; ?>
+                    </button>
                 </div>
-
-                <!-- تب آمار -->
-                <div class="tab-pane fade" id="stats-content" role="tabpanel" aria-labelledby="stats-tab">
-                    <div class="row g-4">
-                        <!-- کارت آمار کلی -->
-                        <div class="col-md-6">
-                            <div class="card h-100">
-                                <div class="card-body">
-                                    <h5 class="card-title mb-5">
-                                        <i class="fas fa-chart-pie text-primary me-2"></i>
-                                        آمار کلی
-                                    </h5>
-                                    <div class="stats-grid">
-                                        <div class="stat-item">
-                                            <div class="stat-icon">
-                                                <i class="fas fa-book"></i>
-                                            </div>
-                                            <div class="stat-info">
-                                                <span class="stat-value" id="totalSubjects">-</span>
-                                                <span class="stat-label">کتاب</span>
-                                            </div>
-                                        </div>
-                                        <div class="stat-item">
-                                            <div class="stat-icon">
-                                                <i class="fas fa-layer-group"></i>
-                                            </div>
-                                            <div class="stat-info">
-                                                <span class="stat-value" id="totalModules">-</span>
-                                                <span class="stat-label">پودمان</span>
-                                            </div>
-                                        </div>
-                                        <div class="stat-item">
-                                            <div class="stat-icon">
-                                                <i class="fas fa-question-circle"></i>
-                                            </div>
-                                            <div class="stat-info">
-                                                <span class="stat-value" id="totalQuestions">-</span>
-                                                <span class="stat-label">سوال</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- کارت پیشرفت -->
-                        <div class="col-md-6">
-                            <div class="card h-100">
-                                <div class="card-body">
-                                    <h5 class="card-title mb-5">
-                                        <i class="fas fa-tasks text-primary me-2"></i>
-                                        پیشرفت کلی
-                                    </h5>
-                                    <div class="progress-stats">
-                                        <div class="circular-progress" id="circularProgress">
-                                            <div class="progress-value">
-                                                <span id="progressPercent">-</span>%
-                                            </div>
-                                        </div>
-                                        <div class="progress-details">
-                                            <div class="detail-item">
-                                            <div>
-                                                <i class="fas fa-check-circle text-success"></i>
-                                                <span>پاسخ داده شده: </span>
-                                            </div>
-                                                <strong id="totalAnswers">-</strong>
-                                            </div>
-                                            <div class="detail-item">
-                                            <div>
-                                                <i class="fas fa-clock text-info"></i>
-                                                <span>آخرین فعالیت: </span>
-                                            </div>
-                                                <strong id="lastActivity">-</strong>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- محل نمایش آمار تفصیلی -->
-                    <div id="detailedStats"></div>
-                </div>
-
-                <!-- تب پنل کاربری -->
-                <div class="tab-pane fade" id="profile-content" role="tabpanel" aria-labelledby="profile-tab">
-                    <div class="text-center py-5">
-                        <i class="fas fa-user fa-3x text-muted mb-3"></i>
-                        <h5 class="paneltext text-muted">بخش پنل کاربری به زودی اضافه خواهد شد</h5>
-                    </div>
-                </div>
+                <?php endforeach; ?>
             </div>
+            <?php endif; ?>
         </div>
 
         <!-- بخش پودمان‌ها -->
@@ -327,7 +1213,7 @@ foreach ($answers as $answer) {
         <!-- بخش پاسخ‌ها -->
         <div id="answerSection" class="section">
             <div class="d-flex align-items-center mb-4">
-                <button style="font-size: 20px; margin: 0px 16px; padding: 8px 18px;" class="btn btn-outline-primary me-3" onclick="backToModules()">
+                <button style="font-size: 20px; margin: 0px 16px;  padding: 8px 18px;" class="btn btn-outline-primary me-3" onclick="backToModules()">
                     <i style="margin: 0px;" class="fas fa-arrow-right"></i>
                 </button>
                 <h4 class="m-0" id="selectedModule"></h4>
@@ -337,9 +1223,747 @@ foreach ($answers as $answer) {
                 </button>
             </div>
             <div id="questionContainer" class="answer-grid"></div>
-            <div style="margin-bottom: 50px;" class="d-flex justify-content-between mt-4">
+            <div style="margin-bottom: 50px;" class="safebaed d-flex justify-content-between mt-4">
                 <button class="btn btn-outline-primary" onclick="prevPage()">صفحه قبل</button>
                 <button class="btn btn-outline-primary" onclick="nextPage()">صفحه بعد</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- تب آمار -->
+            <div class="tab-pane fade" id="stats-content" role="tabpanel">
+                <?php 
+                    // محاسبه کل سوالات و پاسخ‌های داده شده
+                    $totalQuestions = 0;
+                    $answeredQuestions = 0;
+                    
+                    foreach ($subjects as $subject) {
+                        if (isset($modules[$subject['id']])) {
+                            foreach ($modules[$subject['id']] as $module) {
+                                $totalQuestions += $module['questions_count'];
+                                foreach ($userAnswers as $key => $value) {
+                                    if (strpos($key, "module_{$module['id']}_") === 0) {
+                                        $answeredQuestions++;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
+                    $progressPercent = $totalQuestions > 0 ? round(($answeredQuestions / $totalQuestions) * 100) : 0;
+                ?>
+                <div class="stats-header mb-4">
+                    <h4>داشبورد آماری</h4>
+                    <p class="text-muted">خلاصه عملکرد شما</p>
+                </div>
+                
+                <!-- کارت‌های آمار -->
+                <div class="stats-cards">
+                    <div class="stat-card" data-aos="fade-up" data-aos-delay="100">
+                        <div class="stat-value">
+                            <span class="counter"><?php echo count($subjects); ?></span>
+                            <div class="stat-label">کتاب</div>
+                        </div>
+                        <div class="stat-icon">
+                            <i style="margin: 0px;" class="fas fa-book"></i>
+                        </div>
+                        <div class="stat-trend positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>جدید</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card" data-aos="fade-up" data-aos-delay="200">
+                        <div class="stat-value">
+                            <span class="counter"><?php echo $totalQuestions; ?></span>
+                            <div class="stat-label">سوال</div>
+                        </div>
+                        <div class="stat-icon purple">
+                            <i style="margin: 0px;" class="fas fa-tasks"></i>
+                        </div>
+                        <div class="stat-trend positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>کل</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card" data-aos="fade-up" data-aos-delay="300">
+                        <div class="stat-value">
+                            <span class="counter"><?php $darsadzade = $answeredQuestions; echo $answeredQuestions;?></span>
+                            <div class="stat-label">پاسخ</div>
+                        </div>
+                        <div class="stat-icon green">
+                            <i style="margin: 0px;" class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-trend positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>تکمیل شده</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card" data-aos="fade-up" data-aos-delay="400">
+                        <div class="stat-value">
+                            <span class="counter"><?php echo $progressPercent; ?></span>%
+                            <div class="stat-label">پیشرفت کلی</div>
+                        </div>
+                        <div class="stat-icon orange">
+                            <i style="margin: 0px;" class="fas fa-chart-pie"></i>
+                        </div>
+                        <div class="stat-trend <?php echo $progressPercent > 50 ? 'positive' : ''; ?>">
+                            <i class="fas fa-<?php echo $progressPercent > 50 ? 'arrow-up' : 'arrow-right'; ?>"></i>
+                            <span>پیشرفت</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- نمودارها -->
+                <div class="nemodar stats-charts">
+                    <div class="chart-container" data-aos="fade-up" data-aos-delay="100">
+                        <div class="chart-header">
+                            <h5>پیشرفت روزانه</h5>
+                            <div class="chart-actions">
+
+                            </div>
+                        </div>
+                        <div class="nemodar-ckaty chart-body">
+                            <canvas id="dailyProgressChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-container" data-aos="fade-up" data-aos-delay="200">
+                        <div class="chart-header">
+                            <h5>توزیع پیشرفت</h5>
+                            <div class="chart-legend">
+                                <div class="legend-item">
+                                    <span class="legend-dot completed"></span>
+                                    تکمیل شده
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-dot remaining"></span>
+                                    باقی‌مانده
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chart-body donut-chart-container">
+                            <canvas id="overallProgressChart"></canvas>
+                            <div class="donut-center">
+                                <div class="donut-value counter"><?php echo $progressPercent; ?>%</div>
+                                <div class="donut-label">تکمیل شده</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- جدول عملکرد -->
+                <div class="performance-table" data-aos="fade-up" data-aos-delay="300">
+                    <div class="amalkard table-header">
+                        <h5>عملکرد به تفکیک کتاب</h5>
+                        <div class="table-actions">
+                            <button class="btn btn-sm btn-light">
+                                <i class="fas fa-download"></i>
+                                دانلود گزارش
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>نام کتاب</th>
+                                    <th>تعداد سوالات</th>
+                                    <th>پاسخ داده شده</th>
+                                    <th>درصد پیشرفت</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($subjects as $index => $subject): ?>
+                                    <?php
+                                        $subjectQuestions = 0;
+                                        $answeredQuestions = 0;
+                                        foreach ($modules[$subject['id']] as $module) {
+                                            $subjectQuestions += $module['questions_count'];
+                                            foreach ($userAnswers as $key => $value) {
+                                                if (strpos($key, "module_{$module['id']}_") === 0) {
+                                                    $answeredQuestions++;
+                                                }
+                                            }
+                                        }
+                                        $progress = $subjectQuestions > 0 ? 
+                                            round(($answeredQuestions / $subjectQuestions) * 100) : 0;
+                                    ?>
+                                    <tr class="animate-row" style="animation-delay: <?php echo $index * 0.1; ?>s">
+                                        <td>
+                                            <div class="book-info">
+                                                <div class="book-icon">
+                                                    <i class="fas fa-book"></i>
+                                                </div>
+                                                <div class="book-details">
+                                                    <div class="book-name"><?php echo htmlspecialchars($subject['name']); ?></div>
+                                                    <div class="book-grade"><?php echo htmlspecialchars($subject['grade']); ?></div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td><span class="counter"><?php echo $subjectQuestions; ?></span></td>
+                                        <td><span class="counter"><?php echo $answeredQuestions; ?></span></td>
+                                        <td>
+                                            <div class="progress-wrapper">
+                                                <div class="progress">
+                                                    <div class="progress-bar progress-animate" 
+                                                         style="width: <?php echo $progress; ?>%">
+                                                    </div>
+                                                </div>
+                                                <span class="progress-text">
+                                                    <span class="counter"><?php echo $progress; ?></span>%
+                                                </span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <style>
+                /* استایل‌های جدید برای بخش آمار */
+                .stats-header {
+                    text-align: right;
+                    padding: 1rem 0;
+                }
+
+                .stats-header h4 {
+                    margin: 0;
+                    font-weight: 600;
+                    color: #2c3e50;
+                }
+
+                .stats-header p {
+                    margin: 0.5rem 0 0;
+                    font-size: 0.9rem;
+                }
+
+                .stats-cards {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+                    gap: 1.5rem;
+                    margin-bottom: 2rem;
+                }
+
+                .stat-card {
+                    background: #fff;
+                    border-radius: 16px;
+                    padding: 1.5rem;
+                    position: relative;
+                    overflow: hidden;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 1rem;
+                    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+                    transition: all 0.3s ease;
+                }
+
+                .stat-card:hover {
+                    transform: translateY(-5px);
+                    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+                }
+
+                .stat-value {
+                    font-size: 2rem;
+                    font-weight: 600;
+                    color: #2c3e50;
+                    line-height: 1;
+                    display: flex;
+                    align-items: baseline;
+                    gap: 0.25rem;
+                }
+
+                .stat-label {
+                    font-size: 0.9rem;
+                    color: #7f8c8d;
+                    margin-top: 0.25rem;
+                }
+
+                .stat-icon {
+                    position: absolute;
+                    left: 1.5rem;
+                    top: 1.5rem;
+                    width: 48px;
+                    height: 48px;
+                    border-radius: 12px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 1.5rem;
+                    background: rgba(33, 150, 243, 0.1);
+                    color: #2196F3;
+                    transition: all 0.3s ease;
+                }
+
+                .stat-icon.purple {
+                    background: rgba(156, 39, 176, 0.1);
+                    color: #9C27B0;
+                }
+
+                .stat-icon.green {
+                    background: rgba(76, 175, 80, 0.1);
+                    color: #4CAF50;
+                }
+
+                .stat-icon.orange {
+                    background: rgba(255, 152, 0, 0.1);
+                    color: #FF9800;
+                }
+
+                .stat-trend {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    font-size: 0.9rem;
+                    padding: 0.5rem 1rem;
+                    border-radius: 8px;
+                    background: rgba(76, 175, 80, 0.1);
+                    color: #4CAF50;
+                    width: fit-content;
+                }
+
+                .stat-trend.negative {
+                    background: rgba(244, 67, 54, 0.1);
+                    color: #F44336;
+                }
+
+                .stats-charts {
+                    display: grid;
+                    grid-template-columns: 2fr 1fr;
+                    gap: 1.5rem;
+                    margin-bottom: 2rem;
+                }
+
+                .chart-container {
+                    background: #fff;
+                    border-radius: 16px;
+                    padding: 1.5rem;
+                    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+                }
+
+                .chart-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 1.5rem;
+                }
+
+                .chart-header h5 {
+                    margin: 0;
+                    font-weight: 600;
+                    color: #2c3e50;
+                }
+
+                .chart-actions {
+                    display: flex;
+                    gap: 0.5rem;
+                }
+
+                .chart-actions .btn {
+                    padding: 0.25rem 1rem;
+                    border-radius: 8px;
+                    font-size: 0.9rem;
+                }
+
+                .chart-actions .btn.active {
+                    background: #2196F3;
+                    color: #fff;
+                }
+
+                .chart-legend {
+                    display: flex;
+                    gap: 1rem;
+                }
+
+                .legend-item {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    font-size: 0.9rem;
+                    color: #7f8c8d;
+                }
+
+                .legend-dot {
+                    width: 10px;
+                    height: 10px;
+                    border-radius: 50%;
+                }
+
+                .legend-dot.completed {
+                    background: #4CAF50;
+                }
+
+                .legend-dot.remaining {
+                    background: #ecf0f1;
+                }
+
+                .donut-chart-container {
+                    position: relative;
+                    padding-top: 1rem;
+                }
+
+                .donut-center {
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    text-align: center;
+                }
+
+                .donut-value {
+                    font-size: 2rem;
+                    font-weight: 600;
+                    color: #2c3e50;
+                    line-height: 1;
+                }
+
+                .donut-label {
+                    font-size: 0.9rem;
+                    color: #7f8c8d;
+                    margin-top: 0.25rem;
+                }
+
+                .performance-table {
+                    background: #fff;
+                    border-radius: 16px;
+                    padding: 1.5rem;
+                    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+                }
+
+                .table-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 1.5rem;
+                }
+
+                .table-header h5 {
+                    margin: 0;
+                    font-weight: 600;
+                    color: #2c3e50;
+                }
+
+                .table {
+                    margin: 0;
+                }
+
+                .table th {
+                    font-weight: 500;
+                    color: #7f8c8d;
+                    border: none;
+                    padding: 1rem;
+                }
+
+                .table td {
+                    padding: 1rem;
+                    vertical-align: middle;
+                    border: none;
+                }
+
+                .book-info {
+                    display: flex;
+                    align-items: center;
+                    gap: 1rem;
+                }
+
+                .book-icon {
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 10px;
+                    background: rgba(33, 150, 243, 0.1);
+                    color: #2196F3;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                .book-details {
+                    display: flex;
+                    flex-direction: column;
+                }
+
+                .book-name {
+                    font-weight: 500;
+                    color: #2c3e50;
+                }
+
+                .book-grade {
+                    font-size: 0.9rem;
+                    color: #7f8c8d;
+                }
+
+                .progress-wrapper {
+                    display: flex;
+                    align-items: center;
+                    gap: 1rem;
+                }
+
+                .progress {
+                    flex: 1;
+                    height: 6px;
+                    background: #ecf0f1;
+                    border-radius: 3px;
+                    overflow: hidden;
+                }
+
+                .progress-bar {
+                    background: #2196F3;
+                    border-radius: 3px;
+                    position: relative;
+                    overflow: hidden;
+                }
+
+                .progress-animate {
+                    animation: progressAnimation 1.5s ease-out forwards;
+                }
+
+                .progress-bar::after {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: linear-gradient(90deg, 
+                        transparent, 
+                        rgba(255,255,255,0.3), 
+                        transparent);
+                    animation: progressShine 2s infinite;
+                }
+
+                .progress-text {
+                    min-width: 45px;
+                    font-size: 0.9rem;
+                    color: #2c3e50;
+                    font-weight: 500;
+                }
+
+                @keyframes progressAnimation {
+                    from { width: 0; }
+                }
+
+                @keyframes progressShine {
+                    0% { transform: translateX(-100%); }
+                    100% { transform: translateX(100%); }
+                }
+
+                /* موبایل */
+                @media (max-width: 768px) {
+                    .stats-cards {
+                        grid-template-columns: 1fr;
+                    }
+
+                    .stats-charts {
+                        grid-template-columns: 1fr;
+                    }
+
+                    .stat-card {
+                        padding: 1.25rem;
+                    }
+
+                    .stat-value {
+                        font-size: 1.75rem;
+                    }
+
+                    .stat-icon {
+                        width: 40px;
+                        height: 40px;
+                        font-size: 1.25rem;
+                    }
+
+                    .chart-container {
+                        padding: 1.25rem;
+                    }
+
+                    .donut-value {
+                        font-size: 1.5rem;
+                    }
+
+                    .table-responsive {
+                        margin: 0 -1.25rem;
+                        padding: 0 1.25rem;
+                        overflow-x: auto;
+                    }
+
+                    .book-info {
+                        min-width: 200px;
+                    }
+
+                    .progress-wrapper {
+                        min-width: 150px;
+                    }
+                }
+            </style>
+
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            <script>
+                // نمودار پیشرفت روزانه
+                <?php
+                // محاسبه آمار پاسخ‌های روزانه
+                $userId = $_SESSION['user']['id'];
+                $weekDays = ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه'];
+                $dailyStats = array_fill(0, 7, 0);
+
+                // محاسبه تاریخ شنبه (اول هفته)
+                $saturday = new DateTime();
+                while ($saturday->format('w') != 6) { // 6 = شنبه
+                    $saturday->modify('-1 day');
+                }
+                $saturday->setTime(0, 0, 0);
+
+                // دریافت آمار هفته جاری
+                $stmt = $pdo->prepare("
+                    SELECT 
+                        DATE(created_at) as answer_date,
+                        COUNT(*) as answer_count
+                    FROM answers 
+                    WHERE user_id = ? 
+                    AND created_at >= ?
+                    AND created_at <= CURRENT_TIMESTAMP
+                    GROUP BY DATE(created_at)
+                ");
+
+                $stmt->execute([
+                    $userId, 
+                    $saturday->format('Y-m-d 00:00:00')
+                ]);
+
+                $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                // پر کردن آرایه آمار روزانه
+                foreach ($results as $row) {
+                    $answerDate = new DateTime($row['answer_date']);
+                    $daysDiff = $saturday->diff($answerDate)->days;
+                    if ($daysDiff >= 0 && $daysDiff < 7) {
+                        $dailyStats[$daysDiff] = (int)$row['answer_count'];
+                    }
+                }
+
+                // برای دیباگ
+                error_log('Daily Stats: ' . print_r($dailyStats, true));
+                error_log('Start Date: ' . $saturday->format('Y-m-d'));
+                error_log('Results: ' . print_r($results, true));
+                ?>
+                const dailyProgressCtx = document.getElementById('dailyProgressChart').getContext('2d');
+                new Chart(dailyProgressCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: <?php echo json_encode($weekDays); ?>,
+                        datasets: [{
+                            label: 'تعداد پاسخ‌ها',
+                            data: <?php echo json_encode($dailyStats); ?>,
+                            backgroundColor: '#2196F3',
+                            borderRadius: 8,
+                            maxBarThickness: 40
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    display: true,
+                                    color: '#f8f9fa'
+                                },
+                                ticks: {
+                                    font: {
+                                        family: 'Vazirmatn'
+                                    }
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    display: false
+                                },
+                                ticks: {
+                                    font: {
+                                        family: 'Vazirmatn'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+
+            
+                // نمودار پیشرفت کلی
+                const overallProgressCtx = document.getElementById('overallProgressChart').getContext('2d');
+                new Chart(overallProgressCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['تکمیل شده', 'باقی‌مانده'],
+                        datasets: [{
+                            data: [<?php echo $darsadzade; ?>, <?php echo $totalQuestions - $darsadzade; ?>],
+                            backgroundColor: ['#4CAF50', '#ecf0f1'],
+                            borderWidth: 0,
+                            borderRadius: 5
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '75%',
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const value = context.raw;
+                                        const total = <?php echo $totalQuestions; ?>;
+                                        const percentage = Math.round((value / total) * 100);
+                                        return `${value} سوال (${percentage}%)`;
+                                    }
+                                }
+                            }
+                        },
+                        animation: {
+                            animateRotate: true,
+                            animateScale: true
+                        }
+                    }
+                });
+
+                // راه‌اندازی AOS
+                AOS.init({
+                    duration: 800,
+                    once: true,
+                    offset: 50
+                });
+
+                // راه‌اندازی Counter-Up
+                jQuery(document).ready(function($) {
+                    $('.counter').counterUp({
+                        delay: 10,
+                        time: 1000
+                    });
+                });
+            </script>
+
+            <!-- تب کتاب‌های من -->
+            <div class="tab-pane fade" id="books-content" role="tabpanel">
+                <!-- محتوای تب کتاب‌های من -->
+            </div>
+
+            <!-- تب پنل کاربری -->
+            <div class="tab-pane fade" id="profile-content" role="tabpanel">
+               <div class="text-center py-5">
+                        <i class="fas fa-user fa-3x text-muted mb-3"></i>
+                        <h5 class="paneltext text-muted">بخش پنل کاربری به زودی اضافه خواهد شد</h5>
+                    </div>
             </div>
         </div>
     </div>
@@ -598,10 +2222,12 @@ foreach ($answers as $answer) {
 
         // نمایش/مخفی کردن لودر
         function showLoader() {
+            isLoading = true;
             document.getElementById('loaderOverlay').classList.add('active');
         }
 
         function hideLoader() {
+            isLoading = false;
             document.getElementById('loaderOverlay').classList.remove('active');
         }
 
@@ -614,7 +2240,7 @@ foreach ($answers as $answer) {
 
             try {
                 const state = JSON.parse(savedState);
-                if (!state.subjectId) {
+                if (!state.subjectId || !state.moduleId) {
                     return;
                 }
 
@@ -625,20 +2251,12 @@ foreach ($answers as $answer) {
                 }
 
                 currentSubject = subject;
-                
-                // نمایش بخش پودمان‌ها
-                if (state.view === 'modules') {
-                    showModules(subject.id, false);
-                }
-                
-                // نمایش بخش سوالات
-                if (state.view === 'questions' && state.moduleId) {
-                    showModules(subject.id, false);
-                    const module = modules[subject.id]?.find(m => m.id == state.moduleId);
-                    if (module) {
-                        currentModule = module;
-                        showQuestions(module.id, false);
-                    }
+                showModules(subject.id, false);
+
+                const module = modules[subject.id]?.find(m => m.id == state.moduleId);
+                if (module) {
+                    currentModule = module;
+                    showQuestions(module.id, false);
                 }
             } catch (error) {
                 console.error('Error restoring state:', error);
@@ -650,8 +2268,7 @@ foreach ($answers as $answer) {
             const state = {
                 subjectId: currentSubject?.id,
                 moduleId: currentModule?.id,
-                page: currentPage,
-                view: currentModule ? 'questions' : (currentSubject ? 'modules' : 'main')
+                page: currentPage
             };
             localStorage.setItem('quizState', JSON.stringify(state));
         }
@@ -699,11 +2316,11 @@ foreach ($answers as $answer) {
                         <button class="btn btn-lg btn-outline-primary book-btn w-100" 
                                 onclick="showQuestions(${module.id})">
                             <div class="d-flex flex-column w-100">
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <div>
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>
                                         <span class="module-name">${module.name}</span>
-                                    </div>
-                                    <small class="text-muted">${module.questions_count} سوال</small>
+                                </div>
+                                <small class="text-muted">${module.questions_count} سوال</small>
                                 </div>
                                 <div class="progress-line">
                                     <div class="progress-fill ${progressClass}" 
@@ -730,11 +2347,9 @@ foreach ($answers as $answer) {
                 saveState();
             }
 
-            // اجرای انیمیشن با تاخیر برای اطمینان از رندر شدن المان‌ها
-            setTimeout(() => {
-                animateProgressBars();
-                checkTextOverflow();
-            }, 100);
+            // اجرای انیمیشن نوار پیشرفت بعد از رندر شدن المان‌ها
+            setTimeout(animateProgressBars, 100);
+            checkTextOverflow();
         }
 
         // بررسی overflow برای متن‌های طولانی
@@ -840,12 +2455,9 @@ foreach ($answers as $answer) {
         // نمایش بخش مورد نظر
         function showSection(sectionId) {
             document.querySelectorAll('.section').forEach(section => {
-                section.style.display = 'none';
                 section.classList.remove('active');
             });
-            const targetSection = document.getElementById(sectionId);
-            targetSection.style.display = 'block';
-            setTimeout(() => targetSection.classList.add('active'), 50);
+            document.getElementById(sectionId).classList.add('active');
         }
 
         // بازگشت به صفحه کتاب‌ها
@@ -1312,36 +2924,10 @@ foreach ($answers as $answer) {
 
         // اجرای اولیه
         document.addEventListener('DOMContentLoaded', function() {
-            // نمایش لودر در هنگام رفرش صفحه
-            const pageLoader = document.getElementById('pageLoader');
-            
-            // اجرای توابع اصلی به جز انیمیشن‌ها
             restoreState();
             checkTextOverflow();
-            restoreTimerState();
-
-            // مخفی کردن لودر و سپس اجرای انیمیشن‌ها
-            setTimeout(() => {
-                pageLoader.classList.remove('active');
-                setTimeout(() => {
-                    animateProgressBars();
-                }, 300);
-            }, 500);
-            
-            // بازیابی تب فعال از localStorage
-            const activeTab = localStorage.getItem('activeTab');
-            if (activeTab) {
-                const tab = document.querySelector(activeTab);
-                if (tab) {
-                    const bsTab = new bootstrap.Tab(tab);
-                    bsTab.show();
-                }
-            }
-        });
-
-        // نمایش لودر قبل از رفرش صفحه
-        window.addEventListener('beforeunload', function() {
-            document.getElementById('pageLoader').classList.add('active');
+            restoreTimerState(); // بازیابی وضعیت تایمر در لود صفحه
+            animateProgressBars();
         });
 
         // اضافه کردن فراخوانی تابع بررسی overflow بعد از باز شدن مودال مدیریت
@@ -1349,7 +2935,7 @@ foreach ($answers as $answer) {
             checkTextOverflow();
         });
 
-        // تابع انیمیشن نوار پیشرفت - بازنویسی شده
+        // تابع جدید برای اعمال انیمیشن نوار پیشرفت
         function animateProgressBars() {
             const progressBars = document.querySelectorAll('.progress-fill');
             progressBars.forEach(bar => {
@@ -1359,373 +2945,9 @@ foreach ($answers as $answer) {
                 // کمی تاخیر برای اجرای انیمیشن
                 setTimeout(() => {
                     bar.style.width = bar.getAttribute('data-progress') + '%';
-                }, 100);
+                }, 50);
             });
-        }
-
-        // تابع بروزرسانی آمار
-        function updateStats() {
-            // نمایش وضعیت در حال بارگیری
-            document.querySelectorAll('.stat-value, #progressPercent, #totalAnswers, #lastActivity').forEach(el => {
-                el.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-            });
-
-            fetch('stats.php?get_stats')
-                .then(response => response.json())
-                .then(data => {
-                    // بروزرسانی آمار کلی با انیمیشن
-                    animateNumber('totalSubjects', data.subject_stats.total_subjects);
-                    animateNumber('totalModules', data.subject_stats.total_modules);
-                    animateNumber('totalQuestions', data.subject_stats.total_questions);
-                    
-                    // بروزرسانی آمار پاسخ‌ها
-                    animateNumber('totalAnswers', data.answer_stats.total_answers);
-                    
-                    // بروزرسانی درصد پیشرفت با انیمیشن
-                    const progress = data.answer_stats.progress_percent;
-                    animateProgress(progress);
-                    
-                    // بروزرسانی آخرین فعالیت
-                    const lastActivity = data.answer_stats.last_activity ? 
-                        new Date(data.answer_stats.last_activity).toLocaleDateString('fa-IR') :
-                        'بدون فعالیت';
-                    document.getElementById('lastActivity').textContent = lastActivity;
-
-                    // بروزرسانی آمار جدید
-                    updateDetailedStats(data.detailed_stats);
-
-                    // مخفی کردن لودر
-                    document.getElementById('pageLoader').classList.remove('active');
-                })
-                .catch(error => {
-                    console.error('Error fetching stats:', error);
-                    document.querySelectorAll('.stat-value, #progressPercent, #totalAnswers, #lastActivity').forEach(el => {
-                        el.innerHTML = '<i class="fas fa-exclamation-circle text-danger"></i>';
-                    });
-                    // مخفی کردن لودر در صورت خطا
-                    document.getElementById('pageLoader').classList.remove('active');
-                });
-        }
-
-        // تابع انیمیشن اعداد
-        function animateNumber(elementId, finalNumber) {
-            const element = document.getElementById(elementId);
-            const duration = 1000; // مدت زمان انیمیشن به میلی‌ثانیه
-            const start = parseInt(element.textContent) || 0;
-            const increment = (finalNumber - start) / (duration / 16);
-            let current = start;
-            
-            const animate = () => {
-                current += increment;
-                if ((increment >= 0 && current >= finalNumber) || 
-                    (increment < 0 && current <= finalNumber)) {
-                    element.textContent = finalNumber;
-                } else {
-                    element.textContent = Math.round(current);
-                    requestAnimationFrame(animate);
-                }
-            };
-            
-            animate();
-        }
-
-        // تابع انیمیشن دایره پیشرفت
-        function animateProgress(targetProgress) {
-            const progressElement = document.getElementById('progressPercent');
-            const circleElement = document.querySelector('.circular-progress');
-            const duration = 1000;
-            const start = parseInt(progressElement.textContent) || 0;
-            const increment = (targetProgress - start) / (duration / 16);
-            let current = start;
-            
-            const animate = () => {
-                current += increment;
-                if ((increment >= 0 && current >= targetProgress) || 
-                    (increment < 0 && current <= targetProgress)) {
-                    progressElement.textContent = targetProgress;
-                    circleElement.style.setProperty('--progress', `${targetProgress * 3.6}deg`);
-                } else {
-                    progressElement.textContent = Math.round(current);
-                    circleElement.style.setProperty('--progress', `${current * 3.6}deg`);
-                    requestAnimationFrame(animate);
-                }
-            };
-            
-            animate();
-        }
-
-        // اضافه کردن استایل‌های جدید
-        const newStyles = `
-            .circular-progress {
-                background: conic-gradient(var(--progress-color, #2196F3) var(--progress), #f0f0f0 0deg);
-                transition: background 0.3s ease;
-            }
-
-            .stat-value i.fa-spinner {
-                font-size: 1rem;
-                color: #2196F3;
-            }
-
-            .stat-value i.fa-exclamation-circle {
-                font-size: 1rem;
-                color: #dc3545;
-            }
-
-            @keyframes fadeIn {
-                from { opacity: 0; transform: translateY(10px); }
-                to { opacity: 1; transform: translateY(0); }
-            }
-
-            .stats-grid .stat-item {
-                animation: fadeIn 0.5s ease forwards;
-            }
-
-            .stats-grid .stat-item:nth-child(1) { animation-delay: 0.1s; }
-            .stats-grid .stat-item:nth-child(2) { animation-delay: 0.2s; }
-            .stats-grid .stat-item:nth-child(3) { animation-delay: 0.3s; }
-        `;
-
-        // اضافه کردن استایل‌ها به صفحه
-        const styleSheet = document.createElement("style");
-        styleSheet.textContent = newStyles;
-        document.head.appendChild(styleSheet);
-
-        // بروزرسانی آمار هنگام باز شدن تب
-        document.getElementById('stats-tab').addEventListener('shown.bs.tab', updateStats);
-
-        // بروزرسانی اولیه آمار
-        document.addEventListener('DOMContentLoaded', () => {
-            if (document.querySelector('#stats-content.active')) {
-                updateStats();
-            }
-        });
-
-        // تابع رفرش تب کتاب‌ها
-        function refreshBooksTab() {
-            fetch('get_books.php')
-                .then(response => response.json())
-                .then(data => {
-                    subjects = data.subjects;
-                    modules = data.modules;
-                    userAnswers = data.userAnswers;
-                    
-                    // بروزرسانی لیست کتاب‌ها
-                    const subjectList = document.getElementById('subjectList');
-                    if (subjectList) {
-                        if (subjects.length === 0) {
-                            subjectList.innerHTML = `
-                                <div id="emptyState">
-                                    <i class="fas fa-book mb-3"></i>
-                                    <h5>هنوز کتابی اضافه نکرده‌اید</h5>
-                                    <p class="text-muted">برای شروع، روی دکمه "افزودن کتاب جدید" کلیک کنید</p>
-                                </div>
-                            `;
-                        } else {
-                            subjectList.innerHTML = subjects.map(subject => {
-                                // محاسبه درصد پیشرفت
-                                const totalQuestions = modules[subject.id]?.reduce((sum, module) => 
-                                    sum + module.questions_count, 0) || 0;
-                                const answeredQuestions = Object.keys(userAnswers).filter(key => 
-                                    key.startsWith(`module_`) && modules[subject.id]?.some(m => 
-                                        key.startsWith(`module_${m.id}_`)
-                                    )
-                                ).length;
-                                const progressPercent = totalQuestions > 0 ? 
-                                    Math.round((answeredQuestions / totalQuestions) * 100) : 0;
-                                const progressClass = progressPercent < 30 ? 'low' : 
-                                    (progressPercent < 60 ? 'medium' : 'high');
-                                
-                                // تعیین وضعیت پیشرفت
-                                let statusIcon, statusText, statusClass;
-                                if (progressPercent == 100) {
-                                    statusIcon = 'check-circle';
-                                    statusText = 'تموم شد!';
-                                    statusClass = 'complete';
-                                } else if (progressPercent >= 60) {
-                                    statusIcon = 'fire';
-                                    statusText = 'عالی پیش میری';
-                                    statusClass = 'good';
-                                } else if (progressPercent >= 30) {
-                                    statusIcon = 'running';
-                                    statusText = 'تو راهی';
-                                    statusClass = 'half';
-                                } else if (progressPercent > 0) {
-                                    statusIcon = 'hourglass-start';
-                                    statusText = 'تازه اولشه';
-                                    statusClass = 'start';
-                                } else {
-                                    statusIcon = 'book';
-                                    statusText = 'منتظر شروع';
-                                    statusClass = 'none';
-                                }
-
-                                return `
-                                    <div class="position-relative">
-                                        <button class="btn btn-lg btn-outline-primary book-btn w-100" 
-                                                onclick="showModules(${subject.id})">
-                                            <div class="d-flex flex-column w-100">
-                                                <div class="d-flex align-items-center justify-content-between">
-                                                    <span class="book-name">${subject.name}</span>
-                                                    <small class="text-muted">${subject.grade}</small>
-                                                </div>
-                                                <div class="progress-line">
-                                                    <div class="progress-fill ${progressClass}" 
-                                                         data-progress="${progressPercent}"></div>
-                                                </div>
-                                                <div class="progress-text">
-                                                    <span class="progress-status ${statusClass}">
-                                                        <i class="fas fa-${statusIcon}"></i>
-                                                        ${statusText}
-                                                    </span>
-                                                    <span class="progress-percent">${progressPercent}%</span>
-                                                </div>
-                                            </div>
-                                        </button>
-                                    </div>
-                                `;
-                            }).join('');
-                        }
-                        animateProgressBars();
-                        checkTextOverflow();
-                    }
-                })
-                .catch(error => console.error('Error refreshing books:', error));
-        }
-
-        // تابع رفرش تب آمار
-        function refreshStatsTab() {
-            updateStats();
-        }
-
-        // تابع رفرش تب پنل کاربری
-        function refreshProfileTab() {
-            // در حال حاضر محتوای خاصی ندارد
-            console.log('Profile tab refreshed');
-        }
-
-        // تابع جدید برای نمایش آمار تفصیلی
-        function updateDetailedStats(stats) {
-            const detailedStatsHtml = `
-                <div class="row g-4 mt-4">
-                    <!-- کارت عملکرد روزانه -->
-                    <div class="col-md-6">
-                        <div class="card h-100">
-                            <div class="card-body">
-                                <h5 class="card-title mb-5">
-                                    <i class="fas fa-calendar-check text-primary me-2"></i>
-                                    عملکرد روزانه
-                                </h5>
-                                <div class="d-flex align-items-center mb-3">
-                                    <div class="flex-grow-1">
-                                        <h6 class="mb-1">امروز</h6>
-                                        <small class="text-muted">${stats?.today_answers || 0} پاسخ</small>
-                                    </div>
-                                    <div class="progress flex-grow-1" style="height: 8px;">
-                                        <div class="progress-bar" role="progressbar" 
-                                             style="width: ${stats?.today_progress || 0}%" 
-                                             aria-valuenow="${stats?.today_progress || 0}" 
-                                             aria-valuemin="0" 
-                                             aria-valuemax="100"></div>
-                                    </div>
-                                </div>
-                                <div class="d-flex align-items-center">
-                                    <div class="flex-grow-1">
-                                        <h6 class="mb-1">دیروز</h6>
-                                        <small class="text-muted">${stats?.yesterday_answers || 0} پاسخ</small>
-                                    </div>
-                                    <div class="progress flex-grow-1" style="height: 8px;">
-                                        <div class="progress-bar bg-info" role="progressbar" 
-                                             style="width: ${stats?.yesterday_progress || 0}%" 
-                                             aria-valuenow="${stats?.yesterday_progress || 0}" 
-                                             aria-valuemin="0" 
-                                             aria-valuemax="100"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- کارت بهترین عملکرد -->
-                    <div class="col-md-6">
-                        <div class="card h-100">
-                            <div class="card-body">
-                                <h5 class="card-title mb-5">
-                                    <i class="fas fa-trophy text-warning me-2"></i>
-                                    بهترین عملکرد
-                                </h5>
-                                <div class="best-performance">
-                                    <div style="margin-bottom: 20px;" class="d-flex align-items-center">
-                                        <i class="fas fa-star text-warning me-2"></i>
-                                        <div>
-                                            <h6 class="mb-1">بیشترین پاسخ در یک روز</h6>
-                                            <small class="text-muted">${stats?.max_answers_day || '---'}</small>
-                                        </div>
-                                        <h4 class="me-auto mb-0 text-primary">${stats?.max_answers || 0}</h4>
-                                    </div>
-                                    <div class="d-flex align-items-center">
-                                        <i class="fas fa-fire text-danger me-2"></i>
-                                        <div>
-                                            <h6 class="mb-1">روزهای متوالی فعالیت</h6>
-                                            <small class="text-muted">رکورد شخصی شما</small>
-                                        </div>
-                                        <h4 class="me-auto mb-0 text-primary">${stats?.streak_days || 0}</h4>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- کارت نمودار پیشرفت هفتگی -->
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title mb-5">
-                                    <i class="fas fa-chart-line text-success me-2"></i>
-                                    پیشرفت هفتگی
-                                </h5>
-                                <div class="weekly-progress">
-                                    ${generateWeeklyProgressBars(stats?.weekly_progress || {})}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            // اضافه کردن آمار تفصیلی به صفحه
-            const detailedStatsContainer = document.getElementById('detailedStats');
-            if (detailedStatsContainer) {
-                detailedStatsContainer.innerHTML = detailedStatsHtml;
-            }
-        }
-
-        // تابع کمکی برای تولید نمودارهای پیشرفت هفتگی
-        function generateWeeklyProgressBars(weeklyData) {
-            const days = ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه'];
-            return days.map(day => {
-                const progress = weeklyData[day]?.progress || 0;
-                const answers = weeklyData[day]?.answers || 0;
-                return `
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="day-label" style="width: 60px;">
-                            <h6 class="mb-1">${day}</h6>
-                            <small class="text-muted">${answers} پاسخ</small>
-                        </div>
-                        <div class="progress flex-grow-1" style="height: 8px;">
-                            <div class="progress-bar bg-success" role="progressbar" 
-                                 style="width: ${progress}%" 
-                                 aria-valuenow="${progress}" 
-                                 aria-valuemin="0" 
-                                 aria-valuemax="100"></div>
-                        </div>
-                        <div class="me-2">
-                            <small class="text-muted">${progress}%</small>
-                        </div>
-                    </div>
-                `;
-            }).join('');
         }
     </script>
 </body>
-</html>
 </html>

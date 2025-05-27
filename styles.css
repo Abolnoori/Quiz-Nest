@@ -1,5 +1,3 @@
-
-
 body {
   font-family: "Vazirmatn", system-ui, -apple-system, sans-serif;
   background-color: #f8f9fa;
@@ -949,6 +947,68 @@ body {
   margin: -1rem -1rem 1rem -1rem;
   padding: 1rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid #dee2e6;
+  margin-bottom: 2rem;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  white-space: nowrap;
+  scrollbar-width: none; /* برای فایرفاکس */
+  -ms-overflow-style: none; /* برای IE و Edge */
+}
+
+#mainTabs::-webkit-scrollbar {
+  display: none; /* برای کروم و سافاری */
+}
+
+#mainTabs .nav-item {
+  margin-bottom: -1px;
+  flex-shrink: 0;
+}
+
+#mainTabs .nav-link {
+  border: 1px solid transparent;
+  border-radius: 8px 8px 0 0;
+  padding: 0.8rem 1.2rem;
+  font-weight: 500;
+  color: #6c757d;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+#mainTabs .nav-link i {
+  font-size: 1rem;
+}
+
+#mainTabs .nav-link:hover {
+  border-color: #e9ecef #e9ecef #dee2e6;
+  color: #495057;
+}
+
+#mainTabs .nav-link.active {
+  color: #2196f3;
+  border-color: #dee2e6 #dee2e6 #fff;
+}
+
+/* استایل‌های موبایل */
+@media (max-width: 768px) {
+  #mainTabs {
+    margin: -1rem -1rem 1rem -1rem;
+    padding: 1rem;
+    background: #fff;
+    border-bottom: 1px solid #eee;
+  }
+
+  #mainTabs .nav-link {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+
+  #mainTabs .nav-link i {
+    font-size: 14px;
+  }
 }
 
 /* استایل‌های بخش آمار */
@@ -1010,7 +1070,9 @@ body {
   justify-content: center;
   position: relative;
 }
-
+body{
+   margin-bottom: 80px;
+}
 .circular-progress::before {
   content: "";
   position: absolute;
@@ -1044,8 +1106,30 @@ body {
 .detail-item i {
   width: 20px;
 }
-
+  .nemodar-ckaty{
+    height: 280px !important;
+  }
 @media (max-width: 768px) {
+  .amalkard {
+    margin-bottom: 16px !important;
+  }
+  .amalkard h5{
+    font-size: 16px !important;
+  }
+.performance-table{
+  font-size: 14px !important;
+}
+  .nemodar-ckaty{
+    height: 270px !important;
+  }
+  .chart-container{
+    padding: 8px !important;
+
+  }
+  .nemodar {
+    display: flex !important;
+    flex-direction: column-reverse !important;
+  }
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -1061,7 +1145,7 @@ body {
 }
 
 @media (max-width: 768px) {
-  .paneltext{
+  .paneltext {
     font-size: 16px !important;
   }
   .stats-grid {
