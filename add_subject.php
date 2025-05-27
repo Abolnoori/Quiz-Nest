@@ -10,8 +10,19 @@ if (!isset($_SESSION['user'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = $_POST['name'];
     $grade = $_POST['grade'];
-    $questionsCount = (int)$_POST['questions_count'];
+    $questionsCounts = $_POST['questions_count'];
     $userId = $_SESSION['user']['id'];
+    
+    // اعتبارسنجی تعداد سوالات
+    if (!is_array($questionsCounts) || count($questionsCounts) !== 5) {
+        die("خطا: تعداد سوالات نامعتبر است");
+    }
+    
+    foreach ($questionsCounts as $count) {
+        if (!is_numeric($count) || $count < 1 || $count > 100) {
+            die("خطا: تعداد سوالات باید بین 1 تا 100 باشد");
+        }
+    }
     
     try {
         // شروع تراکنش
@@ -24,8 +35,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         // افزودن پودمان‌ها
         $stmt = $pdo->prepare("INSERT INTO modules (subject_id, name, questions_count) VALUES (?, ?, ?)");
-        for ($i = 1; $i <= 5; $i++) {
-            $stmt->execute([$subjectId, "پودمان $i", $questionsCount]);
+        for ($i = 0; $i < 5; $i++) {
+            $stmt->execute([$subjectId, "پودمان " . ($i + 1), $questionsCounts[$i]]);
         }
         
         // تایید تراکنش

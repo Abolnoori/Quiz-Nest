@@ -14,19 +14,28 @@ $user = $_SESSION['user'];
 $subject_id = $_POST['subject_id'] ?? null;
 $name = $_POST['name'] ?? null;
 $grade = $_POST['grade'] ?? null;
-$questions_count = isset($_POST['questions_count']) ? (int)$_POST['questions_count'] : null;
+$questions_counts = $_POST['questions_count'] ?? null;
 
 // اعتبارسنجی داده‌ها
-if (!$subject_id || !$name || !$grade) {
+if (!$subject_id || !$name || !$grade || !$questions_counts) {
     header('Content-Type: application/json');
     echo json_encode(['success' => false, 'message' => 'فیلدهای ضروری را پر کنید']);
     exit;
 }
 
-if ($questions_count === null || $questions_count < 1 || $questions_count > 100) {
+// اعتبارسنجی تعداد سوالات
+if (!is_array($questions_counts) || count($questions_counts) !== 5) {
     header('Content-Type: application/json');
-    echo json_encode(['success' => false, 'message' => 'تعداد سوالات باید بین 1 تا 100 باشد']);
+    echo json_encode(['success' => false, 'message' => 'تعداد سوالات نامعتبر است']);
     exit;
+}
+
+foreach ($questions_counts as $count) {
+    if (!is_numeric($count) || $count < 1 || $count > 100) {
+        header('Content-Type: application/json');
+        echo json_encode(['success' => false, 'message' => 'تعداد سوالات باید بین 1 تا 100 باشد']);
+        exit;
+    }
 }
 
 try {
@@ -45,12 +54,21 @@ try {
     $pdo->beginTransaction();
 
     // بروزرسانی اطلاعات کتاب
-    $stmt = $pdo->prepare("UPDATE subjects SET name = ?, grade = ?, questions_count = ? WHERE id = ?");
-    $stmt->execute([$name, $grade, $questions_count, $subject_id]);
+    $stmt = $pdo->prepare("UPDATE subjects SET name = ?, grade = ? WHERE id = ?");
+    $stmt->execute([$name, $grade, $subject_id]);
 
-    // بروزرسانی تعداد سوالات پودمان‌ها
-    $stmt = $pdo->prepare("UPDATE modules SET questions_count = ? WHERE subject_id = ?");
-    $stmt->execute([$questions_count, $subject_id]);
+    // دریافت پودمان‌های کتاب
+    $stmt = $pdo->prepare("SELECT id FROM modules WHERE subject_id = ? ORDER BY id");
+    $stmt->execute([$subject_id]);
+    $modules = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // بروزرسانی تعداد سوالات هر پودمان
+    $updateStmt = $pdo->prepare("UPDATE modules SET questions_count = ? WHERE id = ?");
+    foreach ($modules as $index => $module) {
+        if (isset($questions_counts[$index])) {
+            $updateStmt->execute([$questions_counts[$index], $module['id']]);
+        }
+    }
 
     // تایید تراکنش
     $pdo->commit();

@@ -1395,7 +1395,7 @@ foreach ($answers as $answer) {
                                         <td>
                                             <div class="book-info">
                                                 <div class="book-icon">
-                                                    <i class="fas fa-book"></i>
+                                                    <i style="margin: 0px;" class="fas fa-book"></i>
                                                 </div>
                                                 <div class="book-details">
                                                     <div class="book-name"><?php echo htmlspecialchars($subject['name']); ?></div>
@@ -1993,8 +1993,18 @@ foreach ($answers as $answer) {
                             <div class="char-counter">0 / 16</div>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">تعداد سوال هر پودمان</label>
-                            <input type="number" class="form-control" name="questions_count" min="1" required>
+                            <label class="form-label">تعداد سوالات هر پودمان</label>
+                            <div style="
+    height: 150px;
+    overflow: auto;
+" class="row">
+                                <?php for($i = 1; $i <= 5; $i++): ?>
+                                <div class="col-md-6 mb-2">
+                                    <label class="form-label small">پودمان <?php echo $i; ?></label>
+                                    <input type="number" class="form-control" name="questions_count[]" min="1" max="100" required>
+                                </div>
+                                <?php endfor; ?>
+                            </div>
                         </div>
                         <button type="submit" class="btn btn-primary w-100">افزودن کتاب</button>
                     </form>
@@ -2151,10 +2161,20 @@ foreach ($answers as $answer) {
                                                oninput="updateCharCounter(this)">
                                         <div class="char-counter">0 / 16</div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label">تعداد سوال هر پودمان</label>
-                                        <input type="number" class="form-control" id="edit_questions_count" 
-                                               min="1" max="100" required>
+                                </div>
+                                <div class="mt-4">
+                                    <label class="form-label">تعداد سوالات هر پودمان</label>
+                                    <div style="
+    height: 150px;
+    overflow: auto;
+" class="row" id="moduleQuestionInputs">
+                                        <?php for($i = 1; $i <= 5; $i++): ?>
+                                        <div class="col-md-6 mb-2">
+                                            <label class="form-label small">پودمان <?php echo $i; ?></label>
+                                            <input type="number" class="form-control" name="module_questions[]" 
+                                                   min="1" max="100" required>
+                                        </div>
+                                        <?php endfor; ?>
                                     </div>
                                 </div>
                                 <div class="d-flex justify-content-between mt-4">
@@ -2753,9 +2773,26 @@ foreach ($answers as $answer) {
                 const gradeInput = document.getElementById('edit_grade');
                 gradeInput.value = subject.grade;
                 updateCharCounter(gradeInput); // بروزرسانی شمارنده برای پایه فعلی
-                document.getElementById('edit_questions_count').value = subject.questions_count;
-                document.getElementById('editFormTitle').textContent = `ویرایش کتاب: ${subject.name}`;
                 
+                // پر کردن تعداد سوالات هر پودمان
+                const moduleInputs = document.getElementsByName('module_questions[]');
+                const modules = Array.from(moduleInputs);
+                
+                // دریافت تعداد سوالات هر پودمان از سرور
+                fetch(`get_module_questions.php?subject_id=${subject.id}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            data.modules.forEach((module, index) => {
+                                if (modules[index]) {
+                                    modules[index].value = module.questions_count;
+                                }
+                            });
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+                
+                document.getElementById('editFormTitle').textContent = `ویرایش کتاب: ${subject.name}`;
                 document.getElementById('subjectsList').style.display = 'none';
                 document.getElementById('editForm').style.display = 'block';
             }
@@ -2775,10 +2812,17 @@ foreach ($answers as $answer) {
 
             const name = document.getElementById('edit_name').value.trim();
             const grade = document.getElementById('edit_grade').value.trim();
-            const questions = parseInt(document.getElementById('edit_questions_count').value);
+            const moduleInputs = document.getElementsByName('module_questions[]');
+            const questionsCounts = Array.from(moduleInputs).map(input => parseInt(input.value));
 
-            if (!name || !grade || isNaN(questions) || questions < 1 || questions > 100) {
-                alert('لطفاً همه فیلدها را به درستی پر کنید');
+            // اعتبارسنجی داده‌ها
+            if (!name || !grade) {
+                alert('لطفاً نام کتاب و پایه تحصیلی را وارد کنید');
+                return;
+            }
+
+            if (questionsCounts.some(count => isNaN(count) || count < 1 || count > 100)) {
+                alert('تعداد سوالات هر پودمان باید بین 1 تا 100 باشد');
                 return;
             }
 
@@ -2787,7 +2831,9 @@ foreach ($answers as $answer) {
             formData.append('subject_id', currentSubjectId);
             formData.append('name', name);
             formData.append('grade', grade);
-            formData.append('questions_count', questions);
+            questionsCounts.forEach((count, index) => {
+                formData.append(`questions_count[${index}]`, count);
+            });
 
             fetch('edit_subject.php', {
                 method: 'POST',
@@ -2797,7 +2843,7 @@ foreach ($answers as $answer) {
             .then(data => {
                 hideLoader();
                 if (data.success) {
-                    showNotification('تغییرات  ذخیره شد', 'success');
+                    showNotification('تغییرات با موفقیت ذخیره شد', 'success');
                     setTimeout(() => location.reload(), 1500);
                 } else {
                     showNotification(data.message || 'خطا در ذخیره تغییرات', 'error');
