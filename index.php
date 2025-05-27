@@ -2534,15 +2534,16 @@ foreach ($answers as $answer) {
             let questionStartNumber = 1;
             const currentModuleIndex = modules[currentSubject.id].findIndex(m => m.id == moduleId);
             if (currentModuleIndex > 0) {
-                // جمع تعداد سوالات پودمان‌های قبلی
                 questionStartNumber = modules[currentSubject.id]
                     .slice(0, currentModuleIndex)
-                    .reduce((sum, module) => sum + module.questions_count, 0) + 1;
+                    .reduce((sum, module) => {
+                        return parseInt(sum) + (parseInt(module.questions_count) || 0);
+                    }, 0) + 1;
             }
             
             let html = '';
-            for(let i = startIndex + 1; i <= Math.min(endIndex, currentModule.questions_count); i++) {
-                const absoluteQuestionNumber = questionStartNumber + i - 1;
+            for(let i = startIndex + 1; i <= Math.min(endIndex, parseInt(currentModule.questions_count)); i++) {
+                const absoluteQuestionNumber = parseInt(questionStartNumber) + (parseInt(i) - 1);
                 const answerKey = `module_${moduleId}_${i}`;
                 const selectedAnswer = userAnswers[answerKey] || '';
                 
@@ -2551,7 +2552,7 @@ foreach ($answers as $answer) {
                         <button class="clear-answer-btn" onclick="clearAnswer(event, ${moduleId}, ${i})" title="پاک کردن پاسخ">
                             <i class="fas fa-times"></i>
                         </button>
-                        <div class="question-number">سوال ${absoluteQuestionNumber}</div>
+                        <div class="question-number">سوال ${toPersianNumber(absoluteQuestionNumber)}</div>
                         <div class="answer-options">
                             ${[1, 2, 3, 4].map(option => `
                                 <div class="answer-option">
@@ -2561,7 +2562,7 @@ foreach ($answers as $answer) {
                                            value="${option}"
                                            ${selectedAnswer == option ? 'checked' : ''}
                                            onchange="saveAnswer(${moduleId}, ${i}, ${option})">
-                                    <label for="q${i}_${option}">گزینه ${option}</label>
+                                    <label for="q${i}_${option}">گزینه ${toPersianNumber(option)}</label>
                                 </div>
                             `).join('')}
                         </div>
@@ -3336,6 +3337,12 @@ foreach ($answers as $answer) {
                 return new bootstrap.Tooltip(tooltipTriggerEl);
             });
         });
+
+        // تبدیل اعداد انگلیسی به فارسی
+        function toPersianNumber(num) {
+            const persianDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+            return num.toString().split('').map(c => persianDigits[c] || c).join('');
+        }
     </script>
 </body>
 </html>
