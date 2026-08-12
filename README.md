@@ -46,6 +46,9 @@ https://github.com/user-attachments/assets/e9e6c181-5374-445e-be5b-04c298763122
 ### 🧩 مدیریت پودمان
 
 <img width="1920" height="1080" alt="book" src="https://github.com/user-attachments/assets/58410e31-5619-47b7-a566-5fa9b33700af" />
+<img width="48%" height="1213" alt="IMG_20260812_161206_987" src="https://github.com/user-attachments/assets/9ad62429-0335-4f17-9417-494edd53443d" />
+<img width="48%" height="1159" alt="IMG_20260812_161206_626" src="https://github.com/user-attachments/assets/9ecf67f8-79be-4b79-acf3-29f5b1efa926" />
+
 
 
 مدیریت پودمان‌ها و تنظیم تعداد سؤالات.
